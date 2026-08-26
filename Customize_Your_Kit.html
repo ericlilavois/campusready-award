@@ -1,0 +1,2560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customize Your Kit - Campus Ready Foundation</title>
+    <link rel="icon" type="image/x-icon" href="CRF_icon_144_x_144.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --teal: #469E92;
+            --teal-dark: #3a8178;
+            --black: #231F20;
+            --grey-light: #F9FAFB;
+            --grey-border: #E5E7EB;
+            --grey-text: #6B7280;
+            --white: #FFFFFF;
+            --error: #DC2626;
+            --school-primary: #469E92;
+            --school-text: #ffffff;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--white);
+            color: var(--black);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container { max-width: 800px; margin: 0 auto; padding: 24px 16px; }
+
+        .header { text-align: center; margin-bottom: 20px; }
+        .logo { max-width: 300px; width: 100%; height: auto; margin: 0 auto 12px; display: block; }
+        .title { font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 700; color: var(--black); margin-bottom: 8px; }
+        .subtitle { font-size: 1.1rem; color: var(--black); max-width: 600px; margin: 0 auto; }
+
+        .progress-container { margin-bottom: 28px; background: var(--grey-light); padding: 14px 20px; border-radius: 10px; }
+        .progress-bar { display: flex; align-items: center; justify-content: space-between; gap: 4px; }
+        .progress-step { flex: 1; text-align: center; position: relative; }
+        .step-circle { width: 28px; height: 28px; border-radius: 50%; background: var(--white); border: 2px solid var(--grey-border); display: flex; align-items: center; justify-content: center; margin: 0 auto 5px; font-weight: 600; font-size: 0.75rem; color: var(--grey-text); transition: all 0.3s ease; }
+        .progress-step.active .step-circle { background: var(--teal); border-color: var(--teal); color: var(--white); }
+        .progress-step.complete .step-circle { background: var(--teal); border-color: var(--teal); color: var(--white); }
+        .progress-step:not(.active):not(.complete) .step-circle { opacity: 0.45; }
+        .step-label { font-size: 0.6875rem; color: var(--grey-text); font-weight: 500; white-space: nowrap; }
+        .progress-step.active .step-label { color: var(--teal); font-weight: 600; }
+        .progress-step.complete .step-label { color: var(--teal); font-weight: 600; }
+        .progress-step:not(.active):not(.complete) .step-label { opacity: 0.45; }
+        .step-arrow { color: var(--grey-border); font-size: 1rem; flex-shrink: 0; }
+
+        .form-card { background: var(--grey-light); border-radius: 12px; padding: 32px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .form-section { display: none; }
+        .form-section.active { display: block; }
+        .section-title { font-size: 1.5rem; font-weight: 600; color: var(--black); margin-bottom: 8px; }
+        .section-description { color: var(--black); margin-bottom: 32px; font-size: 1rem; }
+
+        .form-group { margin-bottom: 24px; }
+        .form-row { display: grid; grid-template-columns: 1fr; gap: 24px; margin-bottom: 24px; }
+        @media (min-width: 640px) {
+            .form-row.cols-2 { grid-template-columns: 1fr 1fr; }
+            .form-row.cols-3 { grid-template-columns: 2fr 1fr 1fr; }
+        }
+
+        label { display: block; font-weight: 500; color: var(--black); margin-bottom: 8px; font-size: 0.95rem; }
+        .required::after { content: " *"; color: var(--teal); }
+        .helper-text { font-size: 0.875rem; color: var(--black); margin-top: 4px; line-height: 1.4; }
+        .live-error { color: var(--error); font-weight: 500; margin-top: 6px; font-size: 0.875rem; display: none; }
+
+        input[type="text"], input[type="email"] {
+            width: 100%; padding: 12px 16px; border: 2px solid var(--grey-border);
+            border-radius: 8px; font-size: 1rem; font-family: inherit;
+            transition: all 0.2s ease; background: var(--white);
+        }
+        input[type="text"]:focus, input[type="email"]:focus {
+            outline: none; border-color: var(--teal); box-shadow: 0 0 0 3px rgba(70,158,146,0.1);
+        }
+        input.invalid { border-color: var(--error); }
+        .error-message { color: var(--error); font-size: 0.875rem; margin-top: 6px; display: none; }
+        .error-message.show { display: block; }
+
+        .radio-group { display: flex; flex-direction: column; gap: 12px; }
+        .radio-option { display: flex; align-items: center; padding: 14px 16px; border: 2px solid var(--grey-border); border-radius: 8px; background: var(--white); cursor: pointer; transition: all 0.2s ease; }
+        .radio-option:hover { border-color: var(--teal); background: rgba(70,158,146,0.03); }
+        .radio-option input[type="radio"] { width: 20px; height: 20px; margin-right: 12px; cursor: pointer; accent-color: var(--teal); }
+        .radio-option label { margin: 0; cursor: pointer; flex: 1; font-weight: 400; }
+        .radio-option input[type="radio"]:checked + label { font-weight: 500; }
+
+        .button-group { display: flex; justify-content: space-between; gap: 12px; margin-top: 32px; flex-wrap: wrap; }
+        .btn { padding: 14px 28px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; border: none; font-family: inherit; }
+        .btn-primary { background: var(--teal); color: var(--white); padding: 10px 20px; }
+        .btn-primary:hover { background: var(--teal-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(70,158,146,0.3); }
+        .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none; }
+        .btn-secondary { background: var(--white); color: var(--teal); border: 2px solid var(--teal); padding: 10px 20px; }
+        .btn-secondary:hover { background: var(--grey-light); }
+
+        .review-block { background: var(--white); border-radius: 8px; padding: 24px; margin-bottom: 20px; }
+        .review-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid var(--grey-light); }
+        .review-title { font-size: 1.1rem; font-weight: 600; color: var(--black); }
+        .edit-link { color: var(--teal); text-decoration: none; font-size: 0.9rem; font-weight: 500; }
+        .edit-link:hover { text-decoration: underline; }
+        .review-item { display: grid; grid-template-columns: 160px 1fr; gap: 12px; margin-bottom: 12px; }
+        .review-label { font-weight: 500; color: var(--grey-text); }
+        .review-value { color: var(--black); }
+
+        .success-screen { display: none; text-align: center; padding: 24px 20px; }
+        .success-screen.show { display: block; }
+        .success-icon { width: 400px; max-width: 90%; margin: 0 auto 16px; }
+        .success-title { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: var(--teal); margin-bottom: 16px; }
+        .success-message { font-size: 1.1rem; color: var(--grey-text); max-width: 600px; margin: 0 auto; line-height: 1.7; }
+
+        .loading-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); z-index: 9999; align-items: center; justify-content: center; }
+        .loading-overlay.show { display: flex; }
+        .loading-content { text-align: center; }
+        .spinner { width: 50px; height: 50px; border: 4px solid var(--grey-light); border-top-color: var(--teal); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-text { font-size: 1.1rem; color: var(--grey-text); }
+
+        /* Document Upload */
+        .upload-help { font-size: 0.9rem; color: var(--grey-text); margin-top: 4px; margin-bottom: 12px; }
+        .file-upload-btn { background: var(--white); border: 2px solid var(--grey-border); color: var(--black); padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 1rem; transition: all 0.3s ease; }
+        .file-upload-btn:hover { border-color: var(--teal); background: var(--grey-light); }
+        .filename-display { margin-top: 8px; font-size: 0.9rem; color: #DD693A; font-style: italic; font-weight: 500; }
+        .upload-progress { margin-top: 12px; }
+        .upload-progress-bar { width: 100%; height: 12px; background: var(--grey-border); border-radius: 8px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--teal); width: 0%; transition: width 0.3s ease; }
+        .progress-text { margin-top: 8px; font-size: 1rem; color: var(--teal); text-align: center; font-weight: 600; }
+        .upload-success { margin-top: 12px; padding: 12px; background: #ECFDF5; border: 1px solid #10B981; border-radius: 8px; color: #065F46; font-weight: 500; }
+        .upload-error { margin-top: 8px; color: var(--error); font-size: 0.9rem; }
+
+        /* ===== SCHOOL CARD ===== */
+        .school-card {
+            background: var(--school-primary); border-radius: 16px;
+            padding: 32px 28px; text-align: center; position: relative; overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12); margin-bottom: 16px;
+        }
+        .school-card::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.10) 0%, transparent 55%);
+            pointer-events: none;
+        }
+        .sc-eyebrow {
+            font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.625rem;
+            color: var(--school-text); opacity: 0.95; margin-bottom: 8px; position: relative;
+        }
+        .sc-headline {
+            font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.625rem;
+            line-height: 1.2; color: var(--school-text); position: relative;
+        }
+        .sc-divider { width: 56px; height: 2px; background: var(--school-text); opacity: 0.4; margin: 16px auto 14px; position: relative; }
+        .sc-rally {
+            font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.1rem;
+            color: var(--school-text); opacity: 0.9; position: relative;
+        }
+
+        @keyframes msgFadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+        .msg-fade { animation: msgFadeIn 0.4s ease forwards; }
+        @keyframes msgPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .msg-pulse { animation: msgPulse 1.8s ease-in-out infinite; }
+
+        .confetti-container { position: fixed; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: 2100; }
+        .confetti-particle  { position: absolute; pointer-events: none; }
+        .youre-in-overlay {
+            position: fixed; inset: 0; z-index: 1001;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(0,0,0,0.45);
+        }
+        .youre-in-card {
+            background: #fff; border-radius: 20px; padding: 40px 48px;
+            text-align: center; box-shadow: 0 24px 60px rgba(0,0,0,0.18);
+        }
+        .youre-in-text {
+            font-family: 'Playfair Display', serif; font-weight: 700;
+            font-size: 2rem; color: var(--black); line-height: 1.2;
+        }
+
+        .checklist-link {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            margin-bottom: 16px; background: rgba(70,158,146,0.10); color: var(--teal-dark);
+            border: none; border-radius: 12px; padding: 14px 16px;
+            font-family: inherit; font-size: 0.9375rem; font-weight: 600;
+            text-decoration: none; transition: background 0.2s ease;
+        }
+        .checklist-link:hover { background: rgba(70,158,146,0.18); }
+        .checklist-link svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+        .kit-greeting {
+            font-size: 1rem; font-weight: 600; color: var(--black);
+            margin-bottom: 8px;
+        }
+        .kit-intro { font-size: 0.9375rem; color: var(--black); margin-bottom: 16px; line-height: 1.5; }
+
+        /* ===== CATEGORY CARDS ===== */
+        .cat-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+        .cat-card { background: var(--white); border: 1px solid var(--grey-border); border-radius: 14px; overflow: hidden; }
+        .cat-head { display: flex; align-items: center; gap: 12px; padding: 16px 18px; cursor: pointer; user-select: none; }
+        .cat-emoji { width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0; background: var(--grey-light); display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .cat-head-body { flex: 1; min-width: 0; }
+        .cat-title { font-size: 1rem; font-weight: 600; color: var(--black); }
+        .cat-meta { font-size: 0.8125rem; color: var(--grey-text); margin-top: 2px; }
+        .cat-meta .needs { color: #DD693A; font-weight: 600; display: block; }
+        .cat-chevron { flex-shrink: 0; white-space: nowrap; }
+        .cat-status-dot { width: 22px; height: 22px; border-radius: 50%; background: var(--teal); color: white; display: none; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; margin-right: 4px; }
+        .cat-card.complete .cat-status-dot { display: flex; }
+        .cat-body { display: none; padding: 0 18px 12px; }
+        .cat-card.open .cat-body { display: block; }
+
+        .kit-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid var(--grey-light); }
+        .kit-row:first-child { border-top: none; }
+        .row-check { width: 18px; height: 18px; border-radius: 50%; background: rgba(70,158,146,0.1); color: var(--teal); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; }
+        .row-label { flex: 1; font-size: 0.875rem; color: #6B7280; }
+        .row-tag { font-size: 0.625rem; font-weight: 600; letter-spacing: 0.4px; text-transform: uppercase; color: #9CA3AF; background: #F3F4F6; border-radius: 999px; padding: 2px 7px; flex-shrink: 0; }
+        .row-qty { font-size: 0.75rem; color: #CBD5E1; flex-shrink: 0; }
+
+        .kit-row.choice { cursor: pointer; border-radius: 10px; margin: 4px -10px; padding: 13px 12px; background: rgba(70,158,146,0.05); border: 1.5px solid rgba(70,158,146,0.2); transition: background 0.15s ease, border-color 0.15s ease; }
+        .kit-row.choice:hover { background: rgba(70,158,146,0.1); border-color: var(--teal); }
+        .kit-row.choice.answered { background: rgba(70,158,146,0.06); border-color: rgba(70,158,146,0.25); }
+        .choice-icon { width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0; border: 2px solid var(--grey-border); display: flex; align-items: center; justify-content: center; color: var(--grey-text); font-size: 13px; }
+        .kit-row.choice.answered .choice-icon { background: var(--teal); border-color: var(--teal); color: white; font-size: 12px; font-weight: 700; }
+        .choice-body { flex: 1; min-width: 0; }
+        .choice-label { font-size: 0.9375rem; font-weight: 600; color: var(--black); }
+        .choice-value { font-size: 0.8125rem; color: var(--grey-text); margin-top: 2px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+        .choice-value .mini-swatch { width: 12px; height: 12px; border-radius: 3px; border: 1px solid rgba(0,0,0,0.12); display: inline-block; flex-shrink: 0; }
+        .choice-cta { font-size: 0.8125rem; font-weight: 600; color: white; background: var(--teal); border-radius: 20px; padding: 5px 12px; white-space: nowrap; flex-shrink: 0; }
+        .kit-row.choice.answered .choice-cta { color: var(--grey-text); background: transparent; padding: 5px 0; }
+        .cascade-note { font-size: 0.75rem; color: var(--grey-text); padding: 4px 0 8px; line-height: 1.4; }
+
+        .hidden-rows { display: none; }
+        .hidden-rows.shown { display: flex; }
+        .see-more { background: none; border: none; font-family: inherit; font-size: 0.8125rem; font-weight: 600; color: var(--teal); cursor: pointer; padding: 10px 0 4px; }
+
+        .kit-footer-progress { font-size: 0.875rem; color: var(--grey-text); margin-bottom: 12px; }
+
+        /* ===== POPUP ===== */
+        .pref-popup-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 1100; padding: 20px;
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.25s ease, visibility 0.25s ease;
+        }
+        .pref-popup-overlay.visible { opacity: 1; visibility: visible; }
+        .pref-popup {
+            background: var(--white); border-radius: 20px; padding: 32px 24px;
+            max-width: 400px; width: 100%; max-height: calc(100vh - 40px); overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            transform: scale(0.95); transition: transform 0.25s cubic-bezier(0.16,1,0.3,1);
+        }
+        .pref-popup-overlay.visible .pref-popup { transform: scale(1); }
+        .pref-popup-style { font-size: 0.875rem; font-weight: 600; color: var(--teal); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+        .pref-popup-title { font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 600; color: var(--black); margin-bottom: 6px; }
+        .pref-popup-copy { font-size: 0.9375rem; color: var(--grey-text); line-height: 1.5; margin-bottom: 20px; }
+
+        .color-swatches { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+        .color-swatch-item { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; }
+        .color-swatch { width: 48px; height: 48px; border-radius: 8px; border: 1px solid rgba(0,0,0,0.1); transition: all 0.15s ease; }
+        .color-swatch-item:hover .color-swatch { transform: scale(1.05); }
+        .color-swatch-item.selected .color-swatch { border: 3px solid var(--teal); box-shadow: 0 0 0 2px rgba(70,158,146,0.2); }
+        .color-swatch-label { font-size: 0.75rem; color: var(--grey-text); text-align: center; max-width: 56px; }
+
+        .pref-section-label { font-size: 0.8125rem; font-weight: 600; color: #374151; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+        .pref-section-label.spaced { margin-top: 20px; }
+
+        .gender-pills { display: flex; gap: 8px; margin-bottom: 4px; flex-wrap: wrap; }
+        .gender-pill { padding: 10px 18px; border: 2px solid #A3C6C0; border-radius: 20px; background: var(--white); font-family: inherit; font-size: 0.9375rem; font-weight: 500; color: #374151; cursor: pointer; transition: all 0.15s ease; }
+        .gender-pill.selected { background: rgba(70,158,146,0.08); border-color: var(--teal); color: var(--teal-dark); }
+
+        .unscented-row { margin-top: 8px; min-height: 44px; border: 2px solid var(--grey-border); background: var(--white); border-radius: 12px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: border-color 0.15s ease, background 0.15s ease; }
+        .unscented-row.selected { border-color: var(--teal); background: rgba(70,158,146,0.08); }
+        .unscented-label { font-size: 0.9375rem; font-weight: 500; color: #374151; }
+        .unscented-row.selected .unscented-label { color: var(--teal-dark); }
+        .unscented-check { font-size: 0.875rem; font-weight: 700; color: var(--teal); opacity: 0; transition: opacity 0.15s ease; }
+        .unscented-row.selected .unscented-check { opacity: 1; }
+
+        .scent-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; margin-bottom: 4px; transition: opacity 0.2s ease; }
+        .scent-grid.dimmed { opacity: 0.4; }
+        .scent-pill { border: 2px solid var(--grey-border); background: var(--white); border-radius: 12px; padding: 16px 8px; cursor: pointer; text-align: center; position: relative; transition: border-color 0.15s ease, background 0.15s ease; display: flex; flex-direction: column; align-items: center; gap: 0; }
+        .scent-pill.selected { border-color: var(--teal); background: rgba(70,158,146,0.08); }
+        .scent-check { position: absolute; top: 6px; right: 6px; width: 16px; height: 16px; border-radius: 50%; background: var(--teal); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.15s ease; color: white; font-size: 9px; font-weight: 700; }
+        .scent-pill.selected .scent-check { opacity: 1; }
+        .scent-emoji { font-size: 22px; line-height: 1; }
+        .scent-name { font-size: 0.8125rem; font-weight: 600; color: var(--black); margin-top: 6px; line-height: 1.3; }
+        .scent-sub { font-size: 0.6875rem; color: #94a3b8; margin-top: 2px; line-height: 1.3; }
+
+        .preference-card { display: flex; flex-direction: column; align-items: flex-start; border: 2px solid var(--grey-border); background: var(--white); border-radius: 12px; padding: 14px 18px; cursor: pointer; transition: border-color 0.15s ease, background 0.15s ease; }
+        .preference-card.selected { border-color: var(--teal); background: rgba(70,158,146,0.08); }
+        .preference-card .pc-title { font-size: 0.9375rem; font-weight: 600; color: var(--black); }
+        .preference-card .pc-sub { font-size: 0.8125rem; color: var(--grey-text); margin-top: 2px; }
+        .card-stack { display: flex; flex-direction: column; gap: 10px; margin-bottom: 4px; }
+        .card-stack.spaced-top { margin-top: 6px; }
+
+        .size-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 4px; }
+        .size-card { border: 2px solid var(--grey-border); background: var(--white); border-radius: 12px; padding: 14px 4px; text-align: center; cursor: pointer; font-weight: 600; color: #374151; transition: all 0.15s ease; }
+        .size-card.selected { border-color: var(--teal); background: rgba(70,158,146,0.08); color: var(--teal-dark); }
+
+        .pref-popup-btn { width: 100%; padding: 14px 24px; background: var(--teal); color: var(--white); border: none; border-radius: 12px; font-family: inherit; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; margin-top: 8px; }
+        .pref-popup-btn:hover { background: var(--teal-dark); }
+        .pref-popup-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .popup-note { font-size: 0.75rem; color: var(--grey-text); text-align: center; margin-top: 10px; line-height: 1.4; }
+
+        /* ===== CELEBRATION MODAL ===== */
+        .celebration-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 2000; padding: 24px;
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .celebration-overlay.visible { opacity: 1; visibility: visible; }
+        .celebration-modal {
+            background: var(--white); border-radius: 24px; padding: 40px 32px 32px;
+            max-width: 420px; width: 100%; text-align: center;
+            box-shadow: 0 24px 64px rgba(0,0,0,0.2);
+            transform: scale(0.92) translateY(16px);
+            transition: transform 0.35s cubic-bezier(0.16,1,0.3,1);
+        }
+        .celebration-overlay.visible .celebration-modal { transform: scale(1) translateY(0); }
+        .celebration-confetti { font-size: 3rem; margin-bottom: 16px; display: block; }
+        .celebration-title {
+            font-family: 'Playfair Display', serif; font-size: 1.625rem; font-weight: 700;
+            color: var(--black); margin-bottom: 10px; line-height: 1.2;
+        }
+        .celebration-body { font-size: 1rem; color: var(--grey-text); line-height: 1.6; margin-bottom: 28px; }
+        .celebration-btn {
+            width: 100%; padding: 14px 24px; background: var(--teal); color: var(--white);
+            border: none; border-radius: 12px; font-family: inherit; font-size: 1rem;
+            font-weight: 600; cursor: pointer; transition: background 0.2s ease;
+        }
+        .celebration-btn:hover { background: var(--teal-dark); }
+
+        @media (max-width: 640px) {
+            .title { font-size: 2rem; }
+            .form-card { padding: 24px 20px; }
+            .step-label { font-size: 0.5625rem; }
+            .step-arrow { font-size: 0.75rem; }
+            .review-item { grid-template-columns: 1fr; gap: 4px; }
+            .button-group { flex-direction: column; }
+            .btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div class="header">
+        <img src="logo-image-1200x630.png" alt="Campus Ready Foundation" class="logo">
+        <h1 class="title" id="pageTitle">Let's personalize your kit.</h1>
+        <p class="subtitle" id="pageSubtitle">Enter the email from your grant application to get started.</p>
+    </div>
+
+    <div class="progress-container">
+        <div class="progress-bar">
+            <div class="progress-step active" id="step-1">
+                <div class="step-circle">1</div>
+                <div class="step-label">Verify Email</div>
+            </div>
+            <div class="step-arrow">→</div>
+            <div class="progress-step" id="step-2">
+                <div class="step-circle">2</div>
+                <div class="step-label">Upload Documents</div>
+            </div>
+            <div class="step-arrow">→</div>
+            <div class="progress-step" id="step-3">
+                <div class="step-circle">3</div>
+                <div class="step-label">Submit My Preferences</div>
+            </div>
+            <div class="step-arrow">→</div>
+            <div class="progress-step" id="step-4">
+                <div class="step-circle">4</div>
+                <div class="step-label">Done!</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- School card — shown after email verification, visible on all screens -->
+    <div id="schoolHeader" style="display:none; margin-bottom:16px;">
+        <div class="school-card" id="schoolCard">
+            <div class="sc-eyebrow" id="scEyebrow"></div>
+            <div class="sc-headline" id="scHeadline"></div>
+            <div class="sc-divider" id="scDivider"></div>
+            <div class="sc-rally" id="scRally"></div>
+        </div>
+        <a class="checklist-link" id="checklistLink" href="#" target="_blank" rel="noopener" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            <span id="checklistLinkText"></span>
+        </a>
+    </div>
+
+    <div id="youreInOverlay" class="youre-in-overlay" style="display:none;">
+        <div class="youre-in-card">
+            <div class="youre-in-text" id="youreInText">You're in!</div>
+        </div>
+    </div>
+
+    <form id="kitForm" class="form-card">
+
+        <!-- EMAIL VALIDATION SECTION -->
+        <div id="emailValidation" class="form-section active">
+            <div id="emailFormBody">
+                <h2 class="section-title">Confirm your email</h2>
+                <p class="section-description">Enter the email address you used in your Campus Ready grant application. This helps us personalize your kit and track your progress.</p>
+                <div class="form-group">
+                    <label for="email_verify" class="required">Email Address</label>
+                    <input type="email" id="email_verify" name="email_verify" placeholder="your.email@example.com" autocomplete="email">
+                    <div id="email-verify-error" class="live-error"></div>
+                </div>
+                <button type="button" id="verifyEmailBtn" class="btn btn-primary">Verify My Email</button>
+            </div>
+            <div id="email-checking" style="display:none; text-align:center; padding:40px 20px;">
+                <div style="width:44px;height:44px;border:3px solid var(--grey-border);border-top-color:var(--teal);border-radius:50%;animation:spin 0.9s linear infinite;margin:0 auto 20px;"></div>
+                <div style="font-size:1.0625rem;font-weight:600;color:var(--black);margin-bottom:8px;">Checking your email…</div>
+                <div style="font-size:0.9rem;color:var(--grey-text);line-height:1.5;">Pulling up your application. Just a moment.</div>
+            </div>
+        </div>
+
+        <!-- DOCUMENT UPLOAD SECTION -->
+        <div id="documentUpload" class="form-section" style="display:none;">
+            <h2 class="section-title">Upload Required Documents</h2>
+            <div style="margin-bottom:20px; border-radius:12px; overflow:hidden; border:1px solid rgba(221,105,58,0.25); box-shadow:0 2px 8px rgba(221,105,58,0.08);">
+                <div style="background:#DD693A; padding:12px 18px; display:flex; align-items:center; gap:10px;">
+                    <span style="font-size:1.25rem;">📅</span>
+                    <span style="font-family:'Playfair Display',serif; font-size:1rem; font-weight:600; color:#ffffff;">Have your housing assignment? Upload it now.</span>
+                </div>
+                <div style="background:#FEF3E7; padding:14px 18px;">
+                    <p style="margin:0; color:#8B4513; font-size:0.9rem; line-height:1.5;">We need at least two weeks to process your kit, so the sooner we have your documents, the sooner everything ships. If your assignment hasn't arrived yet, don't worry. We'll be here when yours does. Bookmark this page if you need to come back and add your docs later.</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="housing_doc" class="required">Housing Assignment Confirmation</label>
+                <p class="upload-help">Please upload a letter from your school or screenshot of your school portal indicating your housing assignment. We accept PDF, JPG, or PNG files up to 5MB.</p>
+                <input type="file" id="housing_doc" accept=".pdf,.jpg,.jpeg,.png" style="display:none;">
+                <button type="button" class="file-upload-btn" onclick="document.getElementById('housing_doc').click()">Choose File</button>
+                <div id="housing_filename" class="filename-display"></div>
+                <div id="housing_progress" class="upload-progress" style="display:none;">
+                    <div class="upload-progress-bar"><div id="housing_progress_fill" class="progress-fill"></div></div>
+                    <div id="housing_progress_text" class="progress-text">Uploading...</div>
+                </div>
+                <div id="housing_success" class="upload-success" style="display:none;">
+                    <img src="CRF_icon_144_x_144.jpg" alt="✓" style="width:32px;height:32px;vertical-align:middle;margin-right:8px;">
+                    Housing document received
+                </div>
+                <div id="housing_error" class="upload-error"></div>
+            </div>
+            <div class="form-group">
+                <label for="acceptance_doc" class="required">College Acceptance Letter</label>
+                <p class="upload-help">Please upload your official confirmation of enrollment. We accept PDF, JPG, or PNG files up to 5MB.</p>
+                <input type="file" id="acceptance_doc" accept=".pdf,.jpg,.jpeg,.png" style="display:none;">
+                <button type="button" class="file-upload-btn" onclick="document.getElementById('acceptance_doc').click()">Choose File</button>
+                <div id="acceptance_filename" class="filename-display"></div>
+                <div id="acceptance_progress" class="upload-progress" style="display:none;">
+                    <div class="upload-progress-bar"><div id="acceptance_progress_fill" class="progress-fill"></div></div>
+                    <div id="acceptance_progress_text" class="progress-text">Uploading...</div>
+                </div>
+                <div id="acceptance_success" class="upload-success" style="display:none;">
+                    <img src="CRF_icon_144_x_144.jpg" alt="✓" style="width:32px;height:32px;vertical-align:middle;margin-right:8px;">
+                    Acceptance letter received
+                </div>
+                <div id="acceptance_error" class="upload-error"></div>
+            </div>
+            <button type="button" id="continueToKitBtn" class="btn btn-primary" disabled style="margin-top:24px;">Continue to Kit Selection</button>
+        </div>
+
+        <!-- SECTION 2: Shipping Information (formerly Section 1) -->
+        <div class="form-section" data-section="2">
+            <h2 class="section-title">Where should we send your kit?</h2>
+            <p class="section-description">Please use your full legal name and the mailing address where you want to receive your kit.</p>
+
+            <div style="margin-bottom:24px; border-radius:14px; overflow:hidden; border:1px solid rgba(70,158,146,0.25); box-shadow:0 2px 12px rgba(70,158,146,0.1);">
+                <div style="background:var(--teal); padding:14px 20px; display:flex; align-items:center; gap:10px;">
+                    <span style="font-size:1.5rem;">🎁</span>
+                    <span style="font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:600; color:#ffffff;">Good news</span>
+                </div>
+                <div style="background:#f0fdfa; padding:16px 20px;">
+                    <p style="margin:0; color:#0f766e; font-size:0.9375rem; line-height:1.6;">
+                        After move-in, we'd love to see and hear how your first days went. If you're willing to share a few photos and a short video, we'll send you a $50 gift card as a thank-you. No obligation. We'll reach out when the time comes.
+                    </p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="student_name" class="required">Student Name</label>
+                <input type="text" id="student_name" name="student_name" required placeholder="Enter your full name, as it appeared on your application">
+            </div>
+
+            <div class="form-group">
+                <label for="email" class="required">Email Address</label>
+                <input type="email" id="email" name="email" required>
+                <div class="live-error" id="email-live-feedback">Please enter a valid email address.</div>
+            </div>
+
+            <div class="form-group">
+                <label class="required">Shipping Preference</label>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="ship_home" name="shipping_preference" value="Home" required>
+                        <label for="ship_home">Home</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="ship_college" name="shipping_preference" value="College" required>
+                        <label for="ship_college">College</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="ship_storage" name="shipping_preference" value="Storage Service" required>
+                        <label for="ship_storage">Storage Service (e.g. Uhaul, college storage program)</label>
+                    </div>
+                </div>
+                <p class="helper-text" style="margin-top:8px;">If shipping to a storage service, enter the facility's address in the fields below.</p>
+            </div>
+
+            <div class="form-group">
+                <label for="street_address" class="required">Street Address</label>
+                <input type="text" id="street_address" name="street_address" required>
+            </div>
+
+            <div class="form-group">
+                <label for="street_address_2">Street Address 2</label>
+                <input type="text" id="street_address_2" name="street_address_2">
+            </div>
+
+            <div class="form-row cols-3">
+                <div class="form-group">
+                    <label for="city" class="required">City</label>
+                    <input type="text" id="city" name="city" required>
+                </div>
+                <div class="form-group">
+                    <label for="state" class="required">State</label>
+                    <input type="text" id="state" name="state" required maxlength="2" placeholder="CA" style="text-transform:uppercase;">
+                    <div class="error-message" id="state-error">Please enter a valid 2-letter state code.</div>
+                </div>
+                <div class="form-group">
+                    <label for="zip" class="required">Zip Code</label>
+                    <input type="text" id="zip" name="zip" required maxlength="5" placeholder="12345">
+                    <div class="live-error" id="zip-live-feedback">Please enter a 5-digit ZIP code.</div>
+                    <div class="error-message" id="zip-error">The City, State, and ZIP code combination appears to be invalid.</div>
+                </div>
+            </div>
+
+            <div class="helper-text" style="margin-top:-16px; margin-bottom:24px;">Use your state's two-letter abbreviation, e.g., CA, NY</div>
+
+            <!-- Inline ZIP suggestion (shown instead of confirm dialog) -->
+            <div id="zip-suggestion" style="display:none; margin:-8px 0 20px; padding:12px 16px; background:#f0fdfa; border:1px solid #99f6e4; border-radius:10px; font-size:0.875rem; color:#0f766e; line-height:1.5;">
+                <strong id="zip-suggestion-text"></strong>
+                <div style="margin-top:8px; display:flex; gap:8px;">
+                    <button type="button" onclick="acceptZipSuggestion()" style="padding:5px 12px; background:var(--teal); color:white; border:none; border-radius:6px; font-size:0.8125rem; font-weight:600; cursor:pointer;">Update</button>
+                    <button type="button" onclick="dismissZipSuggestion()" style="padding:5px 12px; background:transparent; color:var(--teal); border:1px solid var(--teal); border-radius:6px; font-size:0.8125rem; font-weight:600; cursor:pointer;">Keep mine</button>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button type="button" class="btn btn-secondary" onclick="prevSection()">Back</button>
+                <button type="button" class="btn btn-primary" onclick="nextSection()">Continue to Review</button>
+            </div>
+        </div>
+
+        <!-- SECTION 1: Kit Customization (formerly Section 2) -->
+        <div class="form-section" data-section="1">
+
+            <div class="kit-greeting" id="kitGreeting"></div>
+            <p class="kit-intro">We've chosen some great products for you. Some need your input. Tap the cards to review all the options.</p>
+
+            <div class="cat-list" id="catList"></div>
+
+            <div class="kit-footer-progress" id="footerProgress"></div>
+            <div class="button-group">
+                <div></div>
+                <button type="button" class="btn btn-primary" id="kitContinueBtn" disabled onclick="nextSection()">Make your choices to continue</button>
+            </div>
+        </div>
+
+        <!-- SECTION 3: Visual Kit Review -->
+        <div class="form-section" data-section="3">
+
+            <div id="review-school-card" style="border-radius:16px; overflow:hidden; margin-bottom:16px; box-shadow:0 8px 30px rgba(0,0,0,0.12);">
+                <div style="background:var(--school-primary); padding:28px 24px 22px; text-align:center; position:relative;">
+                    <div id="rv-eyebrow" style="font-family:'Playfair Display',serif; font-size:1.15rem; font-weight:600; color:rgba(255,255,255,0.8); margin-bottom:6px;"></div>
+                    <div style="font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:700; color:#fff; line-height:1.2; margin-bottom:10px;" id="rv-headline">Your Campus Ready Kit</div>
+                    <div style="width:40px; height:2px; background:rgba(255,255,255,0.4); margin:0 auto 10px;"></div>
+                    <div id="rv-name" style="font-size:0.9375rem; color:rgba(255,255,255,0.9);"></div>
+                </div>
+                <div style="background:#f8fffe; padding:12px 20px; border-top:1px solid rgba(70,158,146,0.15);">
+                    <div style="display:flex; align-items:center; justify-content:space-between;">
+                        <span style="font-size:0.875rem; color:var(--grey-text);" id="rv-item-count"></span>
+                        <a href="#" class="edit-link" onclick="goToSection(2); return false;" style="font-size:0.875rem;">Edit choices</a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="review-kit-list"></div>
+
+            <div style="margin-top:20px; padding:16px 18px; background:var(--grey-light); border-radius:10px; margin-bottom:8px;">
+                <div style="font-size:0.8125rem; font-weight:600; color:var(--grey-text); text-transform:uppercase; letter-spacing:0.4px; margin-bottom:10px;">Shipping to</div>
+                <div style="font-size:0.9375rem; color:var(--black);" id="rv-address"></div>
+                <a href="#" class="edit-link" onclick="goToSection(1); return false;" style="font-size:0.8125rem; display:inline-block; margin-top:8px;">Edit address</a>
+            </div>
+
+            <div class="button-group" style="margin-top:24px;">
+                <button type="button" class="btn btn-secondary" onclick="prevSection()">Back</button>
+                <button type="button" class="btn btn-primary" onclick="submitForm()">Submit My Kit →</button>
+            </div>
+        </div>
+
+    </form>
+
+    <!-- Success Screen -->
+    <div class="success-screen" id="successScreen">
+        <div class="success-icon">
+            <img src="prepare-badge.jpg" alt="Prepare to Be Prepared" style="width:100%; height:auto;">
+        </div>
+        <h2 class="success-title">You're Done!</h2>
+        <p class="success-message">
+            We'll get to work. Look for your packages a couple of weeks before school starts.<br><br>
+            Congratulations again. You've done something monumental by getting into school.<br><strong>We're proud of you!</strong>
+        </p>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <div class="loading-text">Submitting your preferences...</div>
+        </div>
+    </div>
+
+</div><!-- end .container -->
+
+<!-- In-app Checklist Viewer -->
+<div id="checklistOverlay" style="display:none; position:fixed; inset:0; z-index:3000; flex-direction:column; background:white;">
+    <div style="background:var(--school-primary); padding:14px 20px; display:flex; align-items:center; gap:12px; flex-shrink:0;">
+        <button onclick="closeChecklist()" style="background:rgba(255,255,255,0.2); border:none; color:white; padding:8px 18px; border-radius:20px; font-family:inherit; font-size:0.875rem; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:6px; white-space:nowrap;">← Back to your kit</button>
+        <span id="checklistTitle" style="color:white; font-size:0.875rem; opacity:0.9; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"></span>
+    </div>
+    <iframe id="checklistFrame" style="flex:1; border:none; width:100%;" sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-top-navigation"></iframe>
+    <div id="checklistFallback" style="display:none; flex:1; text-align:center; padding:48px 24px; flex-direction:column; align-items:center; justify-content:center;">
+        <p style="font-size:1rem; color:var(--grey-text); margin-bottom:8px;">This school's page can't be shown here directly.</p>
+        <p style="font-size:0.875rem; color:var(--grey-text); margin-bottom:24px;">Open it in a new tab — we'll be right here when you come back.</p>
+        <a id="checklistFallbackLink" href="#" target="_blank" rel="noopener" style="display:inline-block; background:var(--teal); color:white; padding:12px 28px; border-radius:10px; text-decoration:none; font-weight:600; font-size:1rem;">Open packing list →</a>
+    </div>
+</div>
+
+<!-- Celebration Modal (after document upload) -->
+<div class="celebration-overlay" id="celebrationOverlay">
+    <div class="celebration-modal">
+        <span class="celebration-confetti">🎉</span>
+        <div class="celebration-title">You're all set.</div>
+        <p class="celebration-body">Your documents are in. Now for the fun part. Let's customize your kit.</p>
+        <button class="celebration-btn" id="celebrationContinueBtn">Let's go →</button>
+    </div>
+</div>
+
+<!-- Popup Overlay (outside container so it covers full viewport) -->
+<div class="pref-popup-overlay" id="popupOverlay">
+    <div class="pref-popup" id="popupCard">
+        <div class="pref-popup-style" id="popupStyle"></div>
+        <div class="pref-popup-title" id="popupTitle"></div>
+        <div class="pref-popup-copy" id="popupCopy"></div>
+        <div id="popupContent"></div>
+        <button class="pref-popup-btn" id="popupDoneBtn" disabled onclick="commitPopup()">Done</button>
+        <div class="popup-note" id="popupNote"></div>
+    </div>
+</div>
+
+<script>
+// ============================================================
+// PAGE / SECTION STATE
+// ============================================================
+let currentSection = 1;
+const totalSections = 3;
+
+function updateHeader(title, subtitle) {
+    document.getElementById('pageTitle').textContent = title;
+    document.getElementById('pageSubtitle').innerHTML = subtitle;
+}
+
+function crossFade(hideEl, showEl, done) {
+    const SPRING = 'cubic-bezier(0.16,1,0.3,1)';
+    const card = hideEl ? hideEl.parentElement : null;
+
+    function reveal() {
+        if (!showEl) { if (done) done(); return; }
+        showEl.style.opacity = '0';
+        showEl.style.display = 'block';
+        showEl.classList.add('active');
+        void showEl.offsetHeight;
+        showEl.style.transition = `opacity 0.3s ${SPRING}`;
+        showEl.style.opacity = '1';
+        setTimeout(() => {
+            showEl.style.transition = '';
+            showEl.style.opacity    = '';
+            showEl.style.display    = '';
+            if (card) card.style.minHeight = '';
+            if (done) done();
+        }, 300);
+    }
+
+    if (!hideEl || getComputedStyle(hideEl).display === 'none') { reveal(); return; }
+
+    if (card) card.style.minHeight = card.offsetHeight + 'px';
+
+    hideEl.style.transition = `opacity 0.15s ${SPRING}`;
+    hideEl.style.opacity    = '0';
+    setTimeout(() => {
+        hideEl.style.display    = 'none';
+        hideEl.classList.remove('active');
+        hideEl.style.transition = '';
+        hideEl.style.opacity    = '';
+        reveal();
+    }, 200);
+}
+
+function goToSection(sectionNum) {
+    const hideEl = document.querySelector('.form-section.active');
+    const showEl = document.querySelector(`[data-section="${sectionNum}"]`);
+    if (!showEl || showEl === hideEl) return;
+
+    document.getElementById('schoolHeader').style.display = 'none';
+    setTimeout(() => { window.scrollTo(0, 0); document.body.scrollTop = 0; document.documentElement.scrollTop = 0; }, 150);
+
+    // Prepare content before it fades in
+    document.querySelectorAll('.form-section').forEach(s => { if (s !== hideEl) s.classList.remove('active'); });
+    if (sectionNum === 1) { renderCategories(); updateProgress(); }
+    if (sectionNum === 2) {
+        const nameField  = document.getElementById('student_name');
+        const emailField = document.getElementById('email');
+        if (nameField  && studentData?.studentName && !nameField.value)  nameField.value  = studentData.studentName;
+        if (emailField && studentData?.email        && !emailField.value) {
+            emailField.value = studentData.email;
+            emailField.setAttribute('readonly', true);
+            emailField.style.background = '#f3f4f6';
+            emailField.style.cursor     = 'default';
+            emailField.style.color      = '#6B7280';
+        }
+    }
+    if (sectionNum === 3) { populateReview(); }
+
+    crossFade(hideEl, showEl, () => {
+        currentSection = sectionNum;
+        if (sectionNum === 1) { applySchoolTheme(); updateHeader('Customize Your Kit', ''); }
+        if (sectionNum === 2) { updateHeader('Shipping Information', ''); }
+        if (sectionNum === 3) { updateHeader('Review and Submit', ''); }
+    });
+}
+
+async function nextSection() {
+    if (!await validateSection(currentSection)) return;
+    if (currentSection < totalSections) goToSection(currentSection + 1);
+}
+
+function prevSection() {
+    if (currentSection > 1) goToSection(currentSection - 1);
+}
+
+async function validateSection(sectionNum) {
+    // Section 1 = Kit Customization — check all choice groups answered
+    if (sectionNum === 1) {
+        const allAnswered = CHOICE_GROUPS.every(g => answered[g]);
+        if (!allAnswered) {
+            const missing = CHOICE_GROUPS.find(g => !answered[g]);
+            const card = document.getElementById('cat-' + missing);
+            if (card) {
+                if (!card.classList.contains('open')) card.classList.toggle('open');
+                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            return false;
+        }
+        return true;
+    }
+
+    // Section 2 = Shipping Information — check address fields
+    const section = document.querySelector(`[data-section="${sectionNum}"]`);
+    const inputs = section.querySelectorAll('input[required]');
+
+    for (const input of inputs) {
+        if (input.type === 'radio') {
+            const group = section.querySelectorAll(`input[name="${input.name}"]`);
+            if (!Array.from(group).some(r => r.checked)) {
+                input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return false;
+            }
+        } else if (!input.value.trim()) {
+            input.focus();
+            return false;
+        }
+    }
+
+    if (sectionNum === 2) {
+        const emailInput = document.getElementById('email');
+        const emailError = document.getElementById('email-live-feedback');
+        const state = document.getElementById('state');
+        const stateError = document.getElementById('state-error');
+        const zip = document.getElementById('zip');
+        const zipError = document.getElementById('zip-error');
+
+        const emailResult = window.isValidEmail(emailInput.value);
+        if (!emailResult.valid) {
+            emailInput.classList.add('invalid');
+            emailError.textContent = emailResult.message;
+            emailError.classList.add('show');
+            emailInput.focus();
+            return false;
+        } else {
+            emailInput.classList.remove('invalid');
+            emailError.classList.remove('show');
+        }
+
+        const stateRegex = /^[A-Z]{2}$/;
+        if (!stateRegex.test(state.value.toUpperCase())) {
+            state.classList.add('invalid');
+            stateError.classList.add('show');
+            state.focus();
+            return false;
+        } else {
+            state.classList.remove('invalid');
+            stateError.classList.remove('show');
+        }
+
+        if (!window.isValidZip(zip.value)) {
+            zip.classList.add('invalid');
+            zipError.classList.add('show');
+            zip.focus();
+            return false;
+        } else {
+            zip.classList.remove('invalid');
+            zipError.classList.remove('show');
+        }
+
+        // Soft ZIP/city/state check — show inline note, never block
+        const city = document.getElementById('city');
+        const zipMatches = await window.doesZipMatchCityState(zip.value, city.value, state.value);
+        if (!zipMatches) {
+            const suggEl = document.getElementById('zip-suggestion');
+            if (suggEl) {
+                document.getElementById('zip-suggestion-text').textContent =
+                    `Heads up: ZIP ${zip.value} doesn't match the city/state you entered. Please double-check before submitting.`;
+                suggEl.style.display = 'block';
+            }
+        }
+        zip.classList.remove('invalid');
+        city.classList.remove('invalid');
+        state.classList.remove('invalid');
+    }
+
+    return true;
+}
+
+// ============================================================
+// KIT CUSTOMIZATION DATA
+// ============================================================
+const KIT_COLORS = [
+    { key: 'white', name: 'White', hex: '#FFFFFF' },
+    { key: 'gray',  name: 'Gray',  hex: '#9CA3AF' },
+    { key: 'navy',  name: 'Navy',  hex: '#1E3A5F' },
+    { key: 'cream', name: 'Cream', display: 'Beige', hex: '#F5EFE0' },
+    { key: 'pink',  name: 'Pink',  hex: '#F4C2C2' },
+    { key: 'mint',  name: 'Mint',  hex: '#B5E3D8' }
+];
+
+const GENDERS = [
+    { value: 'Women',  label: "Women's" },
+    { value: 'Men',    label: "Men's" },
+    { value: 'Unisex', label: 'Unisex' }
+];
+
+const SCENTS = [
+    { key: 'fresh',  emoji: '✨', name: 'Fresh & Clean',  sub: 'citrus, ocean, sport',           catalogValue: 'Fresh & Clean' },
+    { key: 'floral', emoji: '🌸', name: 'Soft & Floral',  sub: 'lavender, vanilla, coconut',     catalogValue: 'Soft & Floral' },
+    { key: 'herbal', emoji: '🌿', name: 'Cool & Herbal',  sub: 'eucalyptus, mint, tea tree',     catalogValue: 'Cool & Herbal' },
+    { key: 'wood',   emoji: '🪵', name: 'Wood & Amber',   sub: 'sandalwood, musk, cedar',        catalogValue: 'Wood & Amber' }
+];
+
+const SLIDES_SIZES = [
+    { value: 'Small',       label: 'S' },
+    { value: 'Medium',      label: 'M' },
+    { value: 'Large',       label: 'L' },
+    { value: 'Extra Large', label: 'XL' }
+];
+
+const CATEGORIES = [
+    { id: 'bedding', emoji: '🛏️', title: 'Bedding',
+      included: [{n:'Comforter'}, {n:'Mattress Protector'}, {n:'Pillow Protectors', qty:'×2'}],
+      choices: ['beddingColors', 'beddingFirmness'] },
+    { id: 'bath', emoji: '🛁', title: 'Bath',
+      included: [{n:'Shower Caddy'}, {n:'Toiletry Bag'}],
+      choices: ['towelColor', 'slides'] },
+    { id: 'personal', emoji: '🧴', title: 'Personal Care',
+      included: [{n:'Shampoo'}, {n:'Conditioner'}, {n:'Body Wash'}, {n:'Deodorant / Antiperspirant'},
+                 {n:'Shaving Cream'}, {n:'Razor Handle'}, {n:'Razor Refills'}, {n:'Toothbrush'},
+                 {n:'Toothpaste'}, {n:'Dental Floss'}, {n:'Feminine Hygiene'}, {n:'Facial Tissues'}],
+      choices: ['personalCare'] },
+    { id: 'laundry', emoji: '🧺', title: 'Laundry',
+      included: [{n:'Laundry Pods'}, {n:'Dryer Sheets'}, {n:'Stain Remover'}],
+      choices: [] },
+    { id: 'cleaning', emoji: '✨', title: 'Cleaning',
+      included: [{n:'Disinfecting Wipes'}, {n:'Bathroom Cleaner'}, {n:'All-Purpose Cleaner'},
+                 {n:'Microfiber Cloths'}, {n:'Trash Bin'}, {n:'Paper Towels'}],
+      choices: [] },
+    { id: 'desk', emoji: '🖥️', title: 'Desk',
+      included: [{n:'Desk Lamp'}, {n:'Desktop Organizer'}, {n:'Sticky Notes'}, {n:'Whiteboard'},
+                 {n:'Power Strip'}, {n:'Command Strips'}],
+
+      choices: [] },
+    { id: 'storage', emoji: '📦', title: 'Storage',
+      included: [{n:'Storage Bins'}, {n:'Under-Bed Storage'}, {n:'Hangers'}, {n:'Pants Hangers'},
+                 {n:'Closet Organizer'}, {n:'Drawer Organizer'}],
+      choices: [] }
+];
+
+const CHOICE_DEFS = {
+    beddingColors:   { label: 'Sheet & comforter cover colors', group: 'bedding' },
+    beddingFirmness: { label: 'Pillow firmness', group: 'bedding' },
+    towelColor:      { label: 'Towel color', group: 'bath' },
+    slides:          { label: 'Slides — size & color', group: 'bath' },
+    personalCare:    { label: 'Tell us your preferences', group: 'personal' }
+};
+
+// ============================================================
+// KIT CUSTOMIZATION STATE
+// ============================================================
+const sel = {
+    sheetColor: null, comforterCoverColor: null, beddingFirmness: null,
+    towelColor: null, slidesSize: null, slidesColor: null,
+    pcGender: null, pcScent: null, pcUnscented: false, deodorant: null
+};
+const CHOICE_GROUPS = ['bedding', 'bath', 'personal'];
+const answered = { bedding: false, bath: false, personal: false };
+let activeChoiceKey = null;
+let activeGroup = null;
+let schoolRecord = null;
+
+// ============================================================
+// IN-APP CHECKLIST VIEWER
+// ============================================================
+function openChecklist(url, schoolName) {
+    const overlay  = document.getElementById('checklistOverlay');
+    const frame    = document.getElementById('checklistFrame');
+    const fallback = document.getElementById('checklistFallback');
+    document.getElementById('checklistTitle').textContent = schoolName + '\'s official packing list';
+    document.getElementById('checklistFallbackLink').href = url;
+    frame.style.display = 'block';
+    fallback.style.display = 'none';
+    overlay.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    frame.src = url;
+    // After a delay, check if the iframe loaded meaningful content.
+    // If not (blocked by X-Frame-Options), show the fallback.
+    setTimeout(() => {
+        try {
+            if (!frame.contentDocument || !frame.contentDocument.body ||
+                frame.contentDocument.body.innerHTML.trim() === '') {
+                frame.style.display = 'none';
+                fallback.style.display = 'flex';
+            }
+        } catch(e) {
+            // Cross-origin access blocked — frame loaded externally, which is fine
+        }
+    }, 2500);
+}
+function closeChecklist() {
+    document.getElementById('checklistOverlay').style.display = 'none';
+    document.body.style.overflow = '';
+    document.getElementById('checklistFrame').src = '';
+}
+
+// ============================================================
+// SCHOOL THEMING
+// ============================================================
+async function loadSchoolData(unitid) {
+    if (!unitid) return;
+    try {
+        const resp = await fetch('crf_schools_kit.json');
+        if (!resp.ok) return;
+        const schools = await resp.json();
+        const numId = parseInt(unitid, 10);
+        schoolRecord = schools.find(s => s.unitid === numId) || null;
+        // Apply theme as soon as school data loads — visible on all screens
+        applySchoolTheme();
+    } catch (e) {
+        console.error('Could not load school data:', e);
+    }
+}
+
+function applySchoolTheme() {
+    if (!schoolRecord) return;
+
+    const primary = schoolRecord.primary_color_hex || '#469E92';
+    const textColor = schoolRecord.text_color_override || '#ffffff';
+    document.documentElement.style.setProperty('--school-primary', primary);
+    document.documentElement.style.setProperty('--school-text', textColor);
+
+    const displayName = schoolRecord.nickname || schoolRecord.name || 'your school';
+
+    // Only show the global school card on the kit customization screen (section 1)
+    const section1 = document.querySelector('[data-section="1"]');
+    if (section1 && section1.classList.contains('active')) {
+        document.getElementById('schoolHeader').style.display = 'block';
+    }
+
+    // Eyebrow: rally cry > mascot > first name
+    const firstName = studentData?.studentName ? studentData.studentName.split(' ')[0] : '';
+    const rallyText = schoolRecord?.secondary_phrase
+        || (schoolRecord?.mascot ? `Go ${schoolRecord.mascot}!` : '')
+        || (firstName ? `Go ${firstName}!` : '');
+    if (rallyText) {
+        document.getElementById('scEyebrow').textContent = rallyText;
+        document.getElementById('scEyebrow').style.display = '';
+    } else {
+        document.getElementById('scEyebrow').style.display = 'none';
+    }
+    document.getElementById('scHeadline').innerHTML = `<span style="display:block;font-family:'Inter',sans-serif;font-weight:500;font-size:1rem;margin-bottom:6px;">Let's set you up for</span><span style="display:block;font-family:'Playfair Display',serif;font-weight:700;font-size:2rem;">${displayName}</span>`;
+    if (schoolRecord.slogan) {
+        document.getElementById('scRally').textContent = schoolRecord.slogan;
+    } else {
+        document.getElementById('scRally').style.display = 'none';
+        document.getElementById('scDivider').style.display = 'none';
+    }
+
+    const link = document.getElementById('checklistLink');
+    if (schoolRecord.checklist_url) {
+        const url = schoolRecord.checklist_url;
+        link.href = 'javascript:void(0)';
+        link.onclick = () => openChecklist(url, displayName);
+        document.getElementById('checklistLinkText').textContent = `See ${displayName}'s official packing list →`;
+        link.style.display = 'flex';
+    }
+
+    if (studentData && studentData.studentName) {
+        const firstName = studentData.studentName.split(' ')[0];
+        document.getElementById('kitGreeting').textContent =
+            `${firstName}, below is everything we're sending you for your move-in kit.`;
+    }
+}
+
+// ============================================================
+// CATEGORY RENDERING
+// ============================================================
+let categoriesRendered = false;
+
+function renderCategories() {
+    if (categoriesRendered) return;
+    categoriesRendered = true;
+
+    const VISIBLE = 4;
+    document.getElementById('catList').innerHTML = CATEGORIES.map(cat => {
+        const hasChoices = cat.choices.length > 0;
+        const includedRows = cat.included.map((it, i) => `
+            <div class="kit-row included ${i >= VISIBLE ? 'hidden-rows extra-' + cat.id : ''}">
+                <span class="row-check">✓</span>
+                <span class="row-label">${it.n}</span>
+                ${it.qty ? `<span class="row-qty">${it.qty}</span>` : ''}
+                <span class="row-tag">Included</span>
+            </div>`).join('');
+
+        const seeMore = cat.included.length > VISIBLE
+            ? `<button type="button" class="see-more" onclick="toggleMore('${cat.id}',this)">See all ${cat.included.length} included →</button>` : '';
+
+        let choiceRows = cat.choices.map(key => choiceRowHTML(key)).join('');
+        if (cat.id === 'personal') {
+            choiceRows += `<div class="cascade-note">Your answers apply to every personal care item above.</div>`;
+        }
+
+        const totalCount = cat.included.length + cat.choices.length;
+        const metaText = hasChoices
+            ? `${totalCount} item${totalCount !== 1 ? 's' : ''}<span class="needs">Tap to customize</span>`
+            : `${totalCount} item${totalCount !== 1 ? 's' : ''}`;
+
+        return `
+            <div class="cat-card" id="cat-${cat.id}" data-has-choices="${hasChoices}">
+                <div class="cat-head" onclick="toggleCat('${cat.id}')">
+                    <div class="cat-emoji">${cat.emoji}</div>
+                    <div class="cat-head-body">
+                        <div class="cat-title">${cat.title}</div>
+                        <div class="cat-meta" id="meta-${cat.id}">${metaText}</div>
+                    </div>
+                    <span class="cat-status-dot">✓</span>
+                    <span class="cat-chevron" style="background:var(--teal);color:#fff;padding:4px 10px;border-radius:20px;font-size:0.6875rem;font-weight:600;letter-spacing:0.02em;">Tap to view</span>
+                </div>
+                <div class="cat-body">
+                    ${choiceRows}
+                    ${includedRows}
+                    ${seeMore}
+                </div>
+            </div>`;
+    }).join('');
+}
+
+function choiceRowHTML(key) {
+    const def = CHOICE_DEFS[key];
+    return `
+        <div class="kit-row choice" id="choice-${key}" onclick="openChoice('${key}')">
+            <span class="choice-icon">›</span>
+            <div class="choice-body">
+                <div class="choice-label">${def.label}</div>
+                <div class="choice-value" id="cv-${key}" style="display:none;"></div>
+            </div>
+            <span class="choice-cta">Choose →</span>
+        </div>`;
+}
+
+function toggleCat(id) {
+    if (id === 'personal' && !groupComplete('personal')) {
+        activeChoiceKey = 'personalCare';
+        activeGroup = 'personal';
+        openPersonalCare();
+        return;
+    }
+    const card = document.getElementById('cat-' + id);
+    card.classList.toggle('open');
+    const chev = card.querySelector('.cat-chevron');
+    const isOpen = card.classList.contains('open');
+    if (isOpen) {
+        chev.textContent = '›';
+        Object.assign(chev.style, { background:'transparent', color:'var(--grey-border)',
+            padding:'0', borderRadius:'0', fontSize:'18px', fontWeight:'400', letterSpacing:'0' });
+    } else {
+        chev.textContent = 'Tap to view';
+        Object.assign(chev.style, { background:'var(--teal)', color:'#fff',
+            padding:'4px 10px', borderRadius:'20px', fontSize:'0.6875rem', fontWeight:'600', letterSpacing:'0.02em' });
+    }
+}
+function toggleMore(id, btn) {
+    const rows = document.querySelectorAll('.extra-' + id);
+    const shown = rows[0]?.classList.contains('shown');
+    rows.forEach(r => r.classList.toggle('shown'));
+    const cat = CATEGORIES.find(c => c.id === id);
+    btn.textContent = shown ? `See all ${cat.included.length} included →` : 'Show less';
+}
+
+// ============================================================
+// POPUP HELPERS
+// ============================================================
+function openPopup({ style, title, copy, contentHTML, note, validate }) {
+    const styleEl = document.getElementById('popupStyle');
+    styleEl.textContent = style || '';
+    styleEl.style.display = style ? 'block' : 'none';
+    document.getElementById('popupTitle').textContent = title;
+    document.getElementById('popupCopy').textContent = copy;
+    document.getElementById('popupContent').innerHTML = contentHTML;
+    document.getElementById('popupNote').textContent = note || '';
+    document.getElementById('popupDoneBtn').disabled = true;
+    document.getElementById('popupOverlay')._validate = validate;
+    document.getElementById('popupOverlay').classList.add('visible');
+}
+function closePopup() { document.getElementById('popupOverlay').classList.remove('visible'); }
+function refreshDoneBtn() {
+    const v = document.getElementById('popupOverlay')._validate;
+    document.getElementById('popupDoneBtn').disabled = v ? !v() : true;
+    const inlineBtn = document.getElementById('pcInlineDoneBtn');
+    if (inlineBtn) {
+        const g  = !!document.querySelector('#genderPills .gender-pill.selected');
+        const sc = document.getElementById('unscentedRow')?.classList.contains('selected') ||
+                   !!document.querySelector('#scentGrid .scent-pill.selected');
+        const d  = !!document.querySelector('#deodorantStack .preference-card.selected');
+        inlineBtn.disabled = !(g && sc && d);
+    }
+}
+document.getElementById('popupOverlay').addEventListener('click', e => {
+    if (e.target.id === 'popupOverlay') closePopup();
+});
+
+function swatchGrid(id, selectedKey) {
+    return `<div class="color-swatches" id="${id}">` +
+        KIT_COLORS.map(c => `
+            <div class="color-swatch-item ${selectedKey === c.key ? 'selected' : ''}" data-color="${c.key}" onclick="pickSwatch(this)">
+                <div class="color-swatch" style="background-color:${c.hex};"></div>
+                <span class="color-swatch-label">${c.display || c.name}</span>
+            </div>`).join('') +
+        `</div>`;
+}
+function pickSwatch(el) {
+    const grid = el.closest('.color-swatches');
+    grid.querySelectorAll('.color-swatch-item').forEach(s => s.classList.remove('selected'));
+    el.classList.add('selected');
+    refreshDoneBtn();
+}
+function pickCard(el, stackId) {
+    document.querySelectorAll(`#${stackId} .preference-card`).forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    refreshDoneBtn();
+}
+
+// ============================================================
+// CHOICE ROUTER
+// ============================================================
+function openChoice(key) {
+    activeChoiceKey = key;
+    activeGroup = CHOICE_DEFS[key].group;
+    if (key === 'beddingColors')   openBeddingColors();
+    else if (key === 'beddingFirmness') openFirmness();
+    else if (key === 'towelColor') openTowelColor();
+    else if (key === 'slides')     openSlides();
+    else if (key === 'personalCare') openPersonalCare();
+}
+
+function openBeddingColors() {
+    const content = `
+        <div class="pref-section-label">Sheet set color</div>
+        ${swatchGrid('sheetColorGrid', sel.sheetColor)}
+        <div class="pref-section-label spaced">Comforter cover color</div>
+        ${swatchGrid('comforterColorGrid', sel.comforterCoverColor)}`;
+    openPopup({
+        style: schoolRecord ? schoolRecord.name : 'BEDDING',
+        title: 'Bedding colors',
+        copy: 'Pick a color for your sheets and your comforter cover. You can choose the same color or go with something different.',
+        contentHTML: content,
+        validate: () =>
+            !!document.querySelector('#sheetColorGrid .color-swatch-item.selected') &&
+            !!document.querySelector('#comforterColorGrid .color-swatch-item.selected')
+    });
+}
+
+function openFirmness() {
+    const opts = [
+        { value: 'Soft',   emoji: '☁️', sub: 'Sink right in' },
+        { value: 'Medium', emoji: '⚖️', sub: 'Balanced support' },
+        { value: 'Firm',   emoji: '🪨', sub: 'Solid support' }
+    ];
+    openPopup({
+        style: schoolRecord ? schoolRecord.name : 'BEDDING',
+        title: 'Pillow firmness',
+        copy: 'How do you like your pillow?',
+        contentHTML: `<div class="card-stack" id="firmnessStack">` +
+            opts.map(o => `<div class="preference-card ${sel.beddingFirmness === o.value ? 'selected' : ''}" data-value="${o.value}" onclick="pickCard(this,'firmnessStack')" style="flex-direction:row; align-items:center; gap:14px;"><span style="font-size:1.5rem; flex-shrink:0;">${o.emoji}</span><div><div class="pc-title">${o.value}</div><div class="pc-sub">${o.sub}</div></div></div>`).join('') +
+            `</div>`,
+        validate: () => !!document.querySelector('#firmnessStack .preference-card.selected')
+    });
+}
+
+function openTowelColor() {
+    openPopup({
+        style: schoolRecord ? schoolRecord.name : 'BATH',
+        title: 'Towel color',
+        copy: 'Pick the color for your towel set.',
+        contentHTML: swatchGrid('towelColorGrid', sel.towelColor),
+        validate: () => !!document.querySelector('#towelColorGrid .color-swatch-item.selected')
+    });
+}
+
+function openSlides() {
+    const content = `
+        <div class="pref-section-label">Gender</div>
+        <div class="gender-pills" id="slideGenderPills">
+            ${GENDERS.map(g => `<button class="gender-pill ${sel.pcGender === g.value ? 'selected' : ''}" data-value="${g.value}" onclick="pickSlideGender(this)">${g.label}</button>`).join('')}
+        </div>
+        <div class="pref-section-label spaced">Size</div>
+        <div class="size-grid" id="sizeGrid">` +
+            SLIDES_SIZES.map(s => `<div class="size-card ${sel.slidesSize === s.value ? 'selected' : ''}" data-value="${s.value}" onclick="pickSize(this)">${s.label}</div>`).join('') +
+        `</div>
+        <div class="pref-section-label spaced">Color</div>
+        ${swatchGrid('slidesColorGrid', sel.slidesColor)}`;
+    openPopup({
+        style: schoolRecord ? schoolRecord.name : 'BATH',
+        title: 'Slides',
+        copy: 'Pick the sizing that works for you, then choose your color.',
+        contentHTML: content,
+        validate: () =>
+            !!document.querySelector('#slideGenderPills .gender-pill.selected') &&
+            !!document.querySelector('#sizeGrid .size-card.selected') &&
+            !!document.querySelector('#slidesColorGrid .color-swatch-item.selected')
+    });
+}
+function pickSlideGender(el) {
+    document.querySelectorAll('#slideGenderPills .gender-pill').forEach(p => p.classList.remove('selected'));
+    el.classList.add('selected');
+    // Keep in sync with Personal Care gender so both popups agree
+    sel.pcGender = el.dataset.value;
+    refreshDoneBtn();
+}
+function pickSize(el) {
+    document.querySelectorAll('#sizeGrid .size-card').forEach(s => s.classList.remove('selected'));
+    el.classList.add('selected');
+    refreshDoneBtn();
+}
+
+function personalCareInlineHTML() {
+    return `
+        <div style="padding:4px 0 8px;">
+            <div class="pref-section-label">Which products should we send you?</div>
+            <div class="gender-pills" id="genderPills">
+                ${GENDERS.map(g => `<button class="gender-pill ${sel.pcGender === g.value ? 'selected' : ''}" data-value="${g.value}" onclick="pickGender(this)">${g.label}</button>`).join('')}
+            </div>
+            <div class="pref-section-label spaced">Scent preference</div>
+            <div class="scent-grid ${sel.pcUnscented ? 'dimmed' : ''}" id="scentGrid">
+                ${SCENTS.map(s => `
+                    <div class="scent-pill ${sel.pcScent === s.key ? 'selected' : ''}" data-scent="${s.key}" onclick="pickScent(this)">
+                        <span class="scent-check">✓</span>
+                        <span class="scent-emoji">${s.emoji}</span>
+                        <span class="scent-name">${s.name}</span>
+                        <span class="scent-sub">${s.sub}</span>
+                    </div>`).join('')}
+            </div>
+            <div class="unscented-row ${sel.pcUnscented ? 'selected' : ''}" id="unscentedRow" onclick="toggleUnscented()" style="margin-top:8px;">
+                <span class="unscented-label">Unscented</span><span class="unscented-check">✓</span>
+            </div>
+            <div class="pref-section-label spaced">Deodorant or antiperspirant?</div>
+            <div class="card-stack spaced-top" id="deodorantStack">
+                <div class="preference-card ${sel.deodorant === 'Deodorant' ? 'selected' : ''}" data-value="Deodorant" onclick="pickCard(this,'deodorantStack')"><span class="pc-title">Deodorant</span></div>
+                <div class="preference-card ${sel.deodorant === 'Antiperspirant' ? 'selected' : ''}" data-value="Antiperspirant" onclick="pickCard(this,'deodorantStack')"><span class="pc-title">Antiperspirant</span></div>
+            </div>
+            <button class="pref-popup-btn" id="pcInlineDoneBtn" disabled onclick="commitPersonalCareInline()" style="margin-top:16px;">Save Preferences</button>
+        </div>`;
+}
+
+function commitPersonalCareInline() {
+    sel.pcGender    = document.querySelector('#genderPills .gender-pill.selected').dataset.value;
+    sel.pcUnscented = document.getElementById('unscentedRow').classList.contains('selected');
+    sel.pcScent     = sel.pcUnscented ? null : (document.querySelector('#scentGrid .scent-pill.selected')?.dataset.scent || null);
+    sel.deodorant   = document.querySelector('#deodorantStack .preference-card.selected').dataset.value;
+    const genderLabel = GENDERS.find(g => g.value === sel.pcGender)?.label;
+    const scentLabel  = sel.pcUnscented ? 'Unscented' : SCENTS.find(s => s.key === sel.pcScent)?.name;
+    setChoiceValue('personalCare', `${genderLabel} · ${scentLabel} · ${sel.deodorant}`);
+    updateGroupAnswered('personal');
+    updateProgress();
+}
+
+function openPersonalCare() {
+    const content = `
+        <div class="pref-section-label">Which products should we send you?</div>
+        <div class="gender-pills" id="genderPills">
+            ${GENDERS.map(g => `<button class="gender-pill ${sel.pcGender === g.value ? 'selected' : ''}" data-value="${g.value}" onclick="pickGender(this)">${g.label}</button>`).join('')}
+        </div>
+        <div class="pref-section-label spaced">Scent preference</div>
+        <div class="scent-grid ${sel.pcUnscented ? 'dimmed' : ''}" id="scentGrid">
+            ${SCENTS.map(s => `
+                <div class="scent-pill ${sel.pcScent === s.key ? 'selected' : ''}" data-scent="${s.key}" onclick="pickScent(this)">
+                    <span class="scent-check">✓</span>
+                    <span class="scent-emoji">${s.emoji}</span>
+                    <span class="scent-name">${s.name}</span>
+                    <span class="scent-sub">${s.sub}</span>
+                </div>`).join('')}
+        </div>
+        <div class="unscented-row ${sel.pcUnscented ? 'selected' : ''}" id="unscentedRow" onclick="toggleUnscented()" style="margin-top:8px;">
+            <span class="unscented-label">Unscented</span><span class="unscented-check">✓</span>
+        </div>
+        <div class="pref-section-label spaced">Deodorant or antiperspirant?</div>
+        <div class="card-stack spaced-top" id="deodorantStack">
+            <div class="preference-card ${sel.deodorant === 'Deodorant' ? 'selected' : ''}" data-value="Deodorant" onclick="pickCard(this,'deodorantStack')"><span class="pc-title">Deodorant</span></div>
+            <div class="preference-card ${sel.deodorant === 'Antiperspirant' ? 'selected' : ''}" data-value="Antiperspirant" onclick="pickCard(this,'deodorantStack')"><span class="pc-title">Antiperspirant</span></div>
+        </div>`;
+    openPopup({
+        style: 'PERSONAL CARE',
+        title: 'Tell us a little about yourself',
+        copy: 'Three quick questions so we can pick the right products for you.',
+        contentHTML: content,
+        validate: () => {
+            const g = !!document.querySelector('#genderPills .gender-pill.selected');
+            const sc = document.getElementById('unscentedRow').classList.contains('selected') ||
+                       !!document.querySelector('#scentGrid .scent-pill.selected');
+            const d = !!document.querySelector('#deodorantStack .preference-card.selected');
+            return g && sc && d;
+        }
+    });
+}
+function pickGender(el) {
+    document.querySelectorAll('#genderPills .gender-pill').forEach(p => p.classList.remove('selected'));
+    el.classList.add('selected');
+    refreshDoneBtn();
+}
+function pickScent(pill) {
+    const unscentedRow = document.getElementById('unscentedRow');
+    const grid = document.getElementById('scentGrid');
+    if (unscentedRow.classList.contains('selected')) {
+        unscentedRow.classList.remove('selected');
+        grid.classList.remove('dimmed');
+    }
+    document.querySelectorAll('#scentGrid .scent-pill').forEach(p => p.classList.remove('selected'));
+    pill.classList.add('selected');
+    refreshDoneBtn();
+}
+function toggleUnscented() {
+    const row = document.getElementById('unscentedRow');
+    const grid = document.getElementById('scentGrid');
+    if (!row.classList.contains('selected')) {
+        row.classList.add('selected');
+        grid.classList.add('dimmed');
+        grid.querySelectorAll('.scent-pill.selected').forEach(p => p.classList.remove('selected'));
+    } else {
+        row.classList.remove('selected');
+        grid.classList.remove('dimmed');
+    }
+    refreshDoneBtn();
+}
+
+function openShipping() {
+    const content = `<div class="card-stack" id="shipStack">
+        <div class="preference-card ${sel.shipDest === 'Home' ? 'selected' : ''}" data-value="Home" onclick="pickCard(this,'shipStack')">
+            <span class="pc-title">Ship to home</span>
+            <span class="pc-sub">Arrives before you leave for campus</span>
+        </div>
+        <div class="preference-card ${sel.shipDest === 'College' ? 'selected' : ''}" data-value="College" onclick="pickCard(this,'shipStack')">
+            <span class="pc-title">Ship to college</span>
+            <span class="pc-sub">Waiting for you at your dorm</span>
+        </div>
+    </div>`;
+    openPopup({
+        style: '',
+        title: 'Where should we send it?',
+        copy: 'Pick wherever is easiest.',
+        contentHTML: content,
+        validate: () => !!document.querySelector('#shipStack .preference-card.selected')
+    });
+}
+
+// ============================================================
+// COMMIT POPUP
+// ============================================================
+function commitPopup() {
+    const k = activeChoiceKey;
+
+    if (k === 'beddingColors') {
+        sel.sheetColor = document.querySelector('#sheetColorGrid .color-swatch-item.selected').dataset.color;
+        sel.comforterCoverColor = document.querySelector('#comforterColorGrid .color-swatch-item.selected').dataset.color;
+        const s = KIT_COLORS.find(x => x.key === sel.sheetColor);
+        const d = KIT_COLORS.find(x => x.key === sel.comforterCoverColor);
+        setChoiceValue('beddingColors',
+            `<span class="mini-swatch" style="background:${s.hex}"></span>Sheets ${s.name} · ` +
+            `<span class="mini-swatch" style="background:${d.hex}"></span>Cover ${d.name}`);
+
+    } else if (k === 'beddingFirmness') {
+        sel.beddingFirmness = document.querySelector('#firmnessStack .preference-card.selected').dataset.value;
+        setChoiceValue('beddingFirmness', sel.beddingFirmness);
+
+    } else if (k === 'towelColor') {
+        sel.towelColor = document.querySelector('#towelColorGrid .color-swatch-item.selected').dataset.color;
+        setChoiceValue('towelColor', swatchValueHTML(sel.towelColor));
+
+    } else if (k === 'slides') {
+        sel.pcGender = document.querySelector('#slideGenderPills .gender-pill.selected').dataset.value;
+        sel.slidesSize = document.querySelector('#sizeGrid .size-card.selected').dataset.value;
+        sel.slidesColor = document.querySelector('#slidesColorGrid .color-swatch-item.selected').dataset.color;
+        const sizeLabel = SLIDES_SIZES.find(s => s.value === sel.slidesSize).label;
+        const c = KIT_COLORS.find(x => x.key === sel.slidesColor);
+        const genderLabel = GENDERS.find(g => g.value === sel.pcGender)?.label;
+        setChoiceValue('slides',
+            `${genderLabel} · Size ${sizeLabel} · <span class="mini-swatch" style="background:${c.hex}"></span>${c.name}`);
+
+    } else if (k === 'personalCare') {
+        sel.pcGender = document.querySelector('#genderPills .gender-pill.selected').dataset.value;
+        sel.pcUnscented = document.getElementById('unscentedRow').classList.contains('selected');
+        sel.pcScent = sel.pcUnscented ? null : (document.querySelector('#scentGrid .scent-pill.selected')?.dataset.scent || null);
+        sel.deodorant = document.querySelector('#deodorantStack .preference-card.selected').dataset.value;
+        const genderLabel = GENDERS.find(g => g.value === sel.pcGender)?.label;
+        const scentLabel = sel.pcUnscented ? 'Unscented' : SCENTS.find(s => s.key === sel.pcScent)?.name;
+        setChoiceValue('personalCare', `${genderLabel} · ${scentLabel} · ${sel.deodorant}`);
+
+    }
+
+    updateGroupAnswered(activeGroup);
+    closePopup();
+    updateProgress();
+    if (k === 'personalCare') {
+        const card = document.getElementById('cat-personal');
+        if (card && !card.classList.contains('open')) {
+            card.classList.add('open');
+            const chev = card.querySelector('.cat-chevron');
+            if (chev) {
+                chev.textContent = '›';
+                Object.assign(chev.style, { background:'transparent', color:'var(--grey-border)',
+                    padding:'0', borderRadius:'0', fontSize:'18px', fontWeight:'400', letterSpacing:'0' });
+            }
+        }
+    }
+}
+
+function swatchValueHTML(key) {
+    const c = KIT_COLORS.find(x => x.key === key);
+    return `<span class="mini-swatch" style="background:${c.hex}"></span>${c.name}`;
+}
+
+function setChoiceValue(key, html) {
+    const row = document.getElementById('choice-' + key);
+    row.classList.add('answered');
+    row.querySelector('.choice-icon').textContent = '✓';
+    const cv = document.getElementById('cv-' + key);
+    cv.innerHTML = html;
+    cv.style.display = 'flex';
+    row.querySelector('.choice-cta').textContent = 'Edit';
+}
+
+function groupComplete(group) {
+    if (group === 'bedding')  return !!sel.sheetColor && !!sel.comforterCoverColor && !!sel.beddingFirmness;
+    if (group === 'bath')     return !!sel.towelColor && !!sel.slidesSize && !!sel.slidesColor;
+    if (group === 'personal') return !!sel.pcGender && (sel.pcUnscented || !!sel.pcScent) && !!sel.deodorant;
+    return false;
+}
+
+function updateGroupAnswered(group) {
+    answered[group] = groupComplete(group);
+    const card = document.getElementById('cat-' + group);
+    if (answered[group]) card.classList.add('complete');
+    else card.classList.remove('complete');
+    const cat = CATEGORIES.find(c => c.id === group);
+    if (answered[group]) {
+        document.getElementById('meta-' + group).innerHTML =
+            `<span style="color:var(--teal);font-weight:600;">Set</span> · ${cat.included.length + cat.choices.length} items`;
+    }
+}
+
+function updateProgress() {
+    const total = CHOICE_GROUPS.length;
+    const done = CHOICE_GROUPS.filter(g => answered[g]).length;
+    document.getElementById('footerProgress').textContent = `${done} of ${total} categories set`;
+    const btn = document.getElementById('kitContinueBtn');
+    if (done === total) {
+        btn.disabled = false;
+        btn.textContent = 'Shipping Info →';
+    } else {
+        btn.disabled = true;
+        btn.textContent = `${total - done} more to make it yours`;
+    }
+}
+
+// ============================================================
+// PRODUCT IMAGES
+// Color-variable products use "Product|Color" keys.
+// Personal Care and Slides pending — placeholders remain.
+// ============================================================
+const PLACEHOLDER_IMG = 'https://placehold.co/80x80/F3F4F6/9CA3AF?text=Photo';
+const PRODUCT_IMAGES = {
+    // ── SHEET SET (color-specific) ──────────────────────────
+    'Sheet Set|White':  'https://m.media-amazon.com/images/I/813EcCwq3+L._AC_SL1500_.jpg',
+    'Sheet Set|Gray':   'https://m.media-amazon.com/images/I/71zK7nK9axL._AC_SL1500_.jpg',
+    'Sheet Set|Navy':   'https://m.media-amazon.com/images/I/71VQbIPNfjL._AC_SL1500_.jpg',
+    'Sheet Set|Cream':  'https://m.media-amazon.com/images/I/71H2utHgjJL._AC_SL1500_.jpg',
+    'Sheet Set|Pink':   'https://m.media-amazon.com/images/I/71nfRko+mAL._AC_SL1500_.jpg',
+    'Sheet Set|Mint':   'https://m.media-amazon.com/images/I/71WHDDq8f7L._AC_SL1500_.jpg',
+
+    // ── DUVET COVER (color-specific) ───────────────────────
+    'Duvet Cover|White': 'https://m.media-amazon.com/images/I/81qMhSMnQKL._AC_SL1500_.jpg',
+    'Duvet Cover|Gray':  'https://m.media-amazon.com/images/I/81t-MlivJEL._AC_SL1500_.jpg',
+    'Duvet Cover|Navy':  'https://m.media-amazon.com/images/I/81sAbt2Us3L._AC_SL1500_.jpg',
+    'Duvet Cover|Cream': 'https://m.media-amazon.com/images/I/81uFBS1kFcL._AC_SL1500_.jpg',
+    'Duvet Cover|Pink':  'https://m.media-amazon.com/images/I/81CjlZT5G4L._AC_SL1500_.jpg',
+    'Duvet Cover|Mint':  'https://m.media-amazon.com/images/I/81Iol9Pw5NL._AC_SL1500_.jpg',
+
+    // ── COMFORTER / PROTECTORS ──────────────────────────────
+    'Comforter':          'https://m.media-amazon.com/images/I/61SzkB9DTGL._AC_SL1500_.jpg',
+    'Mattress Protector': 'https://m.media-amazon.com/images/I/71OrR2UH6cL._AC_SL1500_.jpg',
+    'Pillow Protectors':  'https://m.media-amazon.com/images/I/61SrfE5Y+dL._AC_SL1500_.jpg',
+
+    // ── PILLOW (firmness-specific) ──────────────────────────
+    'Pillow|Soft':   'https://m.media-amazon.com/images/I/71329CVoVDL._AC_SL1500_.jpg',
+    'Pillow|Medium': 'https://m.media-amazon.com/images/I/6145-k9xSPL._AC_SL1500_.jpg',
+    'Pillow|Firm':   'https://m.media-amazon.com/images/I/81vowBO1VrL._AC_SL1500_.jpg',
+
+    // ── TOWEL SET (color-specific) ──────────────────────────
+    'Towel Set|White': 'https://m.media-amazon.com/images/I/71brbA5eSxL._AC_SL1500_.jpg',
+    'Towel Set|Gray':  'https://m.media-amazon.com/images/I/913hqZ9Qb+L._AC_SL1500_.jpg',
+    'Towel Set|Navy':  'https://m.media-amazon.com/images/I/91gpuqttYpL._AC_SL1500_.jpg',
+    'Towel Set|Cream': 'https://m.media-amazon.com/images/I/91kN6m4K0oL._AC_SL1500_.jpg',
+    'Towel Set|Pink':  'https://m.media-amazon.com/images/I/91Ml4RHHyPL._AC_SL1500_.jpg',
+    'Towel Set|Mint':  'https://m.media-amazon.com/images/I/91fAaFxF72L._AC_SL1500_.jpg',
+
+    // ── BATH ────────────────────────────────────────────────
+    'Shower Caddy':  'https://m.media-amazon.com/images/I/71GURerjSaL._AC_SL1500_.jpg',
+    'Toiletry Bag':  'https://m.media-amazon.com/images/I/71AADKHbkgL._AC_SL1500_.jpg',
+
+    // ── SLIDES (color-specific; same image across all sizes and genders) ──
+    'Slides|White': 'https://m.media-amazon.com/images/I/51Sng4ocDrL._AC_SX695_.jpg',
+    'Slides|Gray':  'https://m.media-amazon.com/images/I/71K2qkOFQyL._AC_SX695_.jpg',
+    'Slides|Navy':  'https://m.media-amazon.com/images/I/71EWQ9I5s1L._AC_SX695_.jpg',
+    'Slides|Cream': 'https://m.media-amazon.com/images/I/61i-dRRb1oL._AC_SX695_.jpg',
+    'Slides|Pink':  'https://m.media-amazon.com/images/I/61erhf4rQVL._AC_SX695_.jpg',
+    'Slides|Mint':  'https://m.media-amazon.com/images/I/71Gl+xLPD5L._AC_SX695_.jpg',
+
+    // ── SHAMPOO & CONDITIONER (scent-specific; Men and Women share same bundle image) ──
+    'Shampoo & Conditioner|Unscented':     'https://m.media-amazon.com/images/I/617J7KJPFhL._SL1500_.jpg', // CeraVe shampoo (separate unscented)
+    'Shampoo & Conditioner|Fresh & Clean': 'https://m.media-amazon.com/images/I/71dLuswyJBL._SL1500_.jpg', // Native
+    'Shampoo & Conditioner|Soft & Floral': 'https://m.media-amazon.com/images/I/71jyiuNOmKL._SL1500_.jpg', // Native
+    'Shampoo & Conditioner|Cool & Herbal': 'https://m.media-amazon.com/images/I/71CmY7A9E0L._SL1500_.jpg', // Native
+    'Shampoo & Conditioner|Wood & Amber':  'https://m.media-amazon.com/images/I/71SeHZcapXL._SL1500_.jpg', // Native
+
+    // ── BODY WASH (gender-specific) ─────────────────────────
+    'Body Wash|Women':  'https://m.media-amazon.com/images/I/51JjHDWgSKL._SL1000_.jpg',  // EOS Women's
+    'Body Wash|Men':    'https://m.media-amazon.com/images/I/51jQQ8yUfQL._SL1500_.jpg',  // Method Men's
+    'Body Wash|Unisex': 'https://m.media-amazon.com/images/I/61FiC6PgWzL._SL1500_.jpg',  // Native Unisex
+
+    // ── DEODORANT / ANTIPERSPIRANT (gender-specific) ─────────
+    'Deodorant|Women':      'https://m.media-amazon.com/images/I/61CDk0aPrfL._SL1500_.jpg', // Native Women's
+    'Deodorant|Men':        'https://m.media-amazon.com/images/I/71-krfs03hL._SL1500_.jpg', // Dove Men's
+    'Deodorant|Unisex':     'https://m.media-amazon.com/images/I/61XoNO89w7L._SL1500_.jpg', // Vanicream Unisex
+    'Antiperspirant|Women': 'https://m.media-amazon.com/images/I/61XoNO89w7L._SL1500_.jpg', // Vanicream
+    'Antiperspirant|Men':   'https://m.media-amazon.com/images/I/71-krfs03hL._SL1500_.jpg', // Dove Men's
+    'Antiperspirant|Unisex':'https://m.media-amazon.com/images/I/61XoNO89w7L._SL1500_.jpg', // Vanicream
+
+    // ── SHAVING CREAM (gender + scent) ──────────────────────
+    'Shaving Cream|Men|Unscented':        'https://m.media-amazon.com/images/I/61dhc56as4L._SL1500_.jpg', // VaniCream
+    'Shaving Cream|Men|Fresh & Clean':    'https://m.media-amazon.com/images/I/51eJxd9vfKL._SL1500_.jpg', // Cremo
+    'Shaving Cream|Men|Soft & Floral':    'https://m.media-amazon.com/images/I/51oZB-d3SqL._SL1500_.jpg', // Cremo
+    'Shaving Cream|Men|Cool & Herbal':    'https://m.media-amazon.com/images/I/51T4BthaDWL._SL1500_.jpg', // Cremo
+    'Shaving Cream|Men|Wood & Amber':     'https://m.media-amazon.com/images/I/618nWBdeIhL._SL1500_.jpg', // Cremo
+    'Shaving Cream|Women|Unscented':      'https://m.media-amazon.com/images/I/61QjCZz+-dL._SL1500_.jpg', // Billie
+    'Shaving Cream|Women|Fresh & Clean':  'https://m.media-amazon.com/images/I/717rznRUqvL._SL1500_.jpg', // EOS
+    'Shaving Cream|Women|Soft & Floral':  'https://m.media-amazon.com/images/I/61bB6tqqHoL._SL1500_.jpg', // EOS
+    'Shaving Cream|Women|Cool & Herbal':  'https://m.media-amazon.com/images/I/61EJqiTNlpL._SL1500_.jpg', // Kiss My Face
+    'Shaving Cream|Women|Wood & Amber':   'https://m.media-amazon.com/images/I/61d-l41z6xL._SL1500_.jpg', // Cremo
+    'Shaving Cream|Unisex|Unscented':     'https://m.media-amazon.com/images/I/61dhc56as4L._SL1500_.jpg', // VaniCream
+    'Shaving Cream|Unisex|Fresh & Clean': 'https://m.media-amazon.com/images/I/51eJxd9vfKL._SL1500_.jpg', // Cremo
+    'Shaving Cream|Unisex|Soft & Floral': 'https://m.media-amazon.com/images/I/51oZB-d3SqL._SL1500_.jpg', // Cremo
+    'Shaving Cream|Unisex|Cool & Herbal': 'https://m.media-amazon.com/images/I/51T4BthaDWL._SL1500_.jpg', // Cremo
+    'Shaving Cream|Unisex|Wood & Amber':  'https://m.media-amazon.com/images/I/618nWBdeIhL._SL1500_.jpg', // Cremo
+
+    // ── RAZOR HANDLE (gender-specific) ──────────────────────
+    'Razor Handle|Women':   'https://m.media-amazon.com/images/I/615WLv5hD5L._SL1500_.jpg', // Billie
+    'Razor Handle|Men':     'https://m.media-amazon.com/images/I/71Q8+TBhTzL._SL1500_.jpg', // Harry's
+    'Razor Handle|Unisex':  'https://m.media-amazon.com/images/I/81RoJEgK5UL._SL1500_.jpg', // Dollar Shave Club
+
+    // ── RAZOR REFILLS (gender-specific) ─────────────────────
+    'Razor Refills|Women':  'https://m.media-amazon.com/images/I/61T6DIPk2TL._SL1500_.jpg', // Billie
+    'Razor Refills|Men':    'https://m.media-amazon.com/images/I/71-sjaK14UL._SL1500_.jpg', // Harry's
+    'Razor Refills|Unisex': 'https://m.media-amazon.com/images/I/81+Jrud-jKL._SL1500_.jpg', // Dollar Shave Club
+
+    // ── TOOTHBRUSH / DENTAL ─────────────────────────────────
+    'Toothbrush':  'https://m.media-amazon.com/images/I/71K9jutKeCL._AC_SL1500_.jpg', // Curaprox
+    'Dental Floss':'https://m.media-amazon.com/images/I/710k1gFyLvL._AC_SL1500_.jpg',
+
+    // ── LAUNDRY ─────────────────────────────────────────────
+    'Laundry Pods':  'https://m.media-amazon.com/images/I/81Yw8gFOqoL._AC_SL1500_.jpg',
+    'Dryer Sheets':  'https://m.media-amazon.com/images/I/61GXEDQ6DvL._AC_SL1500_.jpg',
+    'Stain Remover': 'https://m.media-amazon.com/images/I/61QHDaGestL._AC_SL1500_.jpg',
+
+    // ── CLEANING ────────────────────────────────────────────
+    'Disinfecting Wipes':  'https://m.media-amazon.com/images/I/71re5SFRK4L._AC_SL1500_.jpg',
+    'Bathroom Cleaner':    'https://m.media-amazon.com/images/I/71iQ1AoegWL._AC_SL1500_.jpg',
+    'All-Purpose Cleaner': 'https://m.media-amazon.com/images/I/71KhddMxKUL._AC_SL1500_.jpg',
+    'Microfiber Cloths':   'https://m.media-amazon.com/images/I/81w8bOHAQHL._AC_SL1500_.jpg',
+    'Trash Bin':           'https://m.media-amazon.com/images/I/41rZFx3ltvL._SL1500_.jpg',
+    'Paper Towels':        'https://m.media-amazon.com/images/I/71tXcUdNE+L._AC_SL1500_.jpg',
+
+    // ── DESK ────────────────────────────────────────────────
+    'Desk Lamp':         'https://m.media-amazon.com/images/I/51Ap5qHeQGL._AC_SL1500_.jpg',
+    'Desktop Organizer': 'https://m.media-amazon.com/images/I/614z7w+EtsL._AC_SL1500_.jpg',
+    'Sticky Notes':      'https://m.media-amazon.com/images/I/71jRyBA8hwL._AC_SL1500_.jpg',
+    'Whiteboard':        'https://m.media-amazon.com/images/I/610zpxSKvlL._AC_SL1500_.jpg',
+    'Power Strip':       'https://m.media-amazon.com/images/I/611IqNw495L._AC_SL1500_.jpg',
+    'Command Strips':    'https://m.media-amazon.com/images/I/81TY1nb1vxL._SL1500_.jpg',
+
+    // ── STORAGE ─────────────────────────────────────────────
+    'Storage Bins':     'https://m.media-amazon.com/images/I/515ngqr1KML._AC_SL1200_.jpg',
+    'Under-Bed Storage':'https://m.media-amazon.com/images/I/51TUWJwtR+L._AC_SL1500_.jpg',
+    'Hangers':          'https://m.media-amazon.com/images/I/71PDwhyAN-L._AC_SL1500_.jpg',
+    'Pants Hangers':    'https://m.media-amazon.com/images/I/61-VcTJfgZL._AC_SL1500_.jpg',
+    'Closet Organizer': 'https://m.media-amazon.com/images/I/71d2zg7GAeL._AC_SL1500_.jpg',
+    'Drawer Organizer': 'https://m.media-amazon.com/images/I/51ekZ5lDZBL._AC_SL1000_.jpg',
+};
+
+// Lookup with up to two fallback levels: "Product|A|B" → "Product|A" → "Product" → placeholder
+function getProductImg(key, a, b) {
+    if (a && b && PRODUCT_IMAGES[key + '|' + a + '|' + b]) return PRODUCT_IMAGES[key + '|' + a + '|' + b];
+    if (a && PRODUCT_IMAGES[key + '|' + a]) return PRODUCT_IMAGES[key + '|' + a];
+    return PRODUCT_IMAGES[key] || PLACEHOLDER_IMG;
+}
+
+// ============================================================
+// PRODUCT BRANDS
+// Same key structure as PRODUCT_IMAGES for consistency.
+// ============================================================
+const PRODUCT_BRANDS = {
+    // Bedding
+    'Sheet Set':               'Lane Linen',
+    'Duvet Cover':             'California Design Den',
+    'Comforter':               'ViscoSoft',
+    'Mattress Protector':      'Amazon Basics',
+    'Pillow Protectors':       'Amazon Basics',
+    'Pillow|Soft':             'Beckham Hotel Collection',
+    'Pillow|Medium':           'Utopia Bedding',
+    'Pillow|Firm':             'Love Attitude',
+
+    // Towels (brand varies by color)
+    'Towel Set|White':         'Lane Linen',
+    'Towel Set|Gray':          'Lane Linen',
+    'Towel Set|Pink':          'Lane Linen',
+    'Towel Set|Mint':          'Lane Linen',
+    'Towel Set|Navy':          'Cotton Paradise',
+    'Towel Set|Cream':         'Cotton Paradise',
+
+    // Bath
+    'Shower Caddy':            'Byune',
+    'Toiletry Bag':            'Maliton',
+    'Slides':                  'Bronax',
+
+    // Shampoo & Conditioner (brand varies by scent)
+    'Shampoo & Conditioner|Unscented':     'CeraVe',
+    'Shampoo & Conditioner|Fresh & Clean': 'Native',
+    'Shampoo & Conditioner|Soft & Floral': 'Native',
+    'Shampoo & Conditioner|Cool & Herbal': 'Native',
+    'Shampoo & Conditioner|Wood & Amber':  'Native',
+
+    // Body Wash (brand varies by gender)
+    'Body Wash|Women':         'EOS',
+    'Body Wash|Men':           'Method',
+    'Body Wash|Unisex':        'Native',
+
+    // Deodorant / Antiperspirant (brand varies by gender)
+    'Deodorant|Women':         'Native',
+    'Deodorant|Men':           'Dove',
+    'Deodorant|Unisex':        'Vanicream',
+    'Antiperspirant|Women':    'Vanicream',
+    'Antiperspirant|Men':      'Dove',
+    'Antiperspirant|Unisex':   'Vanicream',
+
+    // Shaving Cream (brand varies by gender + scent)
+    'Shaving Cream|Men|Unscented':        'VaniCream',
+    'Shaving Cream|Men|Fresh & Clean':    'Cremo',
+    'Shaving Cream|Men|Soft & Floral':    'Cremo',
+    'Shaving Cream|Men|Cool & Herbal':    'Cremo',
+    'Shaving Cream|Men|Wood & Amber':     'Cremo',
+    'Shaving Cream|Women|Unscented':      'Billie',
+    'Shaving Cream|Women|Fresh & Clean':  'EOS',
+    'Shaving Cream|Women|Soft & Floral':  'EOS',
+    'Shaving Cream|Women|Cool & Herbal':  'Kiss My Face',
+    'Shaving Cream|Women|Wood & Amber':   'Cremo',
+    'Shaving Cream|Unisex|Unscented':     'VaniCream',
+    'Shaving Cream|Unisex|Fresh & Clean': 'Cremo',
+    'Shaving Cream|Unisex|Soft & Floral': 'Cremo',
+    'Shaving Cream|Unisex|Cool & Herbal': 'Cremo',
+    'Shaving Cream|Unisex|Wood & Amber':  'Cremo',
+    // Razor (brand varies by gender)
+    'Razor Handle|Women':      'Billie',
+    'Razor Handle|Men':        "Harry's",
+    'Razor Handle|Unisex':     'Dollar Shave Club',
+    'Razor Refills|Women':     'Billie',
+    'Razor Refills|Men':       "Harry's",
+    'Razor Refills|Unisex':    'Dollar Shave Club',
+
+    // Grooming
+    'Toothbrush':              'Curaprox',
+    'Dental Floss':            'Oral-B',
+
+    // Laundry
+    'Laundry Pods':            'Tide',
+    'Dryer Sheets':            'Amazon Basics',
+    'Stain Remover':           'Miss Mouths',
+
+    // Cleaning
+    'Disinfecting Wipes':      'Clorox',
+    'Bathroom Cleaner':        'Scrubbing Bubbles',
+    'All-Purpose Cleaner':     'Lysol',
+    'Microfiber Cloths':       'Aidea',
+    'Trash Bin':               'iDesign',
+    'Paper Towels':            'Amazon Basics',
+
+    // Desk
+    'Desk Lamp':               'White Drown',
+    'Desktop Organizer':       'Blue Ginkgo',
+    'Sticky Notes':            'Post-it',
+    'Whiteboard':              'VUSIGN',
+    'Power Strip':             'Amazon Basics',
+    'Command Strips':          '3M',
+
+    // Storage
+    'Storage Bins':            'Iris',
+    'Under-Bed Storage':       'Iris',
+    'Hangers':                 'Amazon Basics',
+    'Pants Hangers':           'Amazon Basics',
+    'Closet Organizer':        'Simple Houseware',
+    'Drawer Organizer':        'Amazon Basics',
+};
+
+function getBrand(key, a, b) {
+    if (a && b && PRODUCT_BRANDS[key + '|' + a + '|' + b]) return PRODUCT_BRANDS[key + '|' + a + '|' + b];
+    if (a && PRODUCT_BRANDS[key + '|' + a]) return PRODUCT_BRANDS[key + '|' + a];
+    return PRODUCT_BRANDS[key] || '';
+}
+
+function reviewProductRow(imgSrc, name, detail, brand) {
+    return `
+        <div style="display:flex; align-items:center; gap:12px; padding:12px 0; border-top:1px solid var(--grey-light);">
+            <div style="width:56px; height:56px; border-radius:8px; overflow:hidden; flex-shrink:0; background:var(--grey-light); border:1px solid var(--grey-border);">
+                <img src="${imgSrc}" alt="${name}" style="width:100%; height:100%; object-fit:cover;" onerror="this.parentElement.style.background='#f3f4f6'; this.style.display='none';">
+            </div>
+            <div style="flex:1; min-width:0;">
+                <div style="font-size:0.9375rem; font-weight:500; color:var(--black); line-height:1.3;">${name}</div>
+                ${detail ? `<div style="font-size:0.8125rem; color:var(--teal-dark); margin-top:2px; font-weight:500;">${detail}</div>` : ''}
+                ${brand ? `<div style="font-size:0.75rem; color:var(--grey-text); margin-top:1px;">${brand}</div>` : ''}
+            </div>
+        </div>`;
+}
+
+function toggleReviewSection(el) {
+    var b = el.parentElement.querySelector('.rv-body');
+    var c = el.querySelector('.rv-chev');
+    var isOpen = b.style.display !== 'none';
+    b.style.display = isOpen ? 'none' : 'block';
+    if (isOpen) {
+        c.textContent = 'Tap to review ›';
+        Object.assign(c.style, { background:'var(--teal)', color:'#fff', padding:'4px 10px',
+            borderRadius:'20px', fontSize:'0.6875rem', fontWeight:'600', letterSpacing:'0.02em' });
+    } else {
+        c.textContent = '›';
+        Object.assign(c.style, { background:'transparent', color:'var(--grey-text)', padding:'0',
+            borderRadius:'0', fontSize:'14px', fontWeight:'400', letterSpacing:'0' });
+    }
+}
+
+let _reviewSectionIdx = 0;
+function reviewCategorySection(title, emoji, rows, startOpen) {
+    const id = 'rvsec-' + (_reviewSectionIdx++);
+    const open = startOpen ? '' : 'display:none;';
+    const cta = startOpen
+        ? `<span class="rv-chev" style="color:var(--grey-text); font-size:14px;">›</span>`
+        : `<span class="rv-chev" style="background:var(--teal); color:#fff; padding:4px 10px; border-radius:20px; font-size:0.6875rem; font-weight:600; letter-spacing:0.02em; white-space:nowrap;">Tap to review ›</span>`;
+    return `
+        <div style="background:var(--white); border:1px solid var(--grey-border); border-radius:14px; overflow:hidden; margin-bottom:10px;">
+            <div onclick="toggleReviewSection(this)"
+                 style="display:flex; align-items:center; gap:10px; padding:14px 18px; background:var(--grey-light); cursor:pointer; user-select:none;">
+                <span style="font-size:18px;">${emoji}</span>
+                <span style="font-size:0.9375rem; font-weight:600; color:var(--black); flex:1;">${title}</span>
+                ${cta}
+            </div>
+            <div class="rv-body" style="${open}padding:0 18px 4px;">
+                ${rows}
+            </div>
+        </div>`;
+}
+
+// ============================================================
+// REVIEW
+// ============================================================
+function populateReview() {
+    const form = document.getElementById('kitForm');
+    const formData = new FormData(form);
+
+    // School-branded header
+    const schoolName  = schoolRecord ? (schoolRecord.nickname || schoolRecord.name) : (studentData?.collegeName || 'your school');
+    const mascot      = schoolRecord?.mascot || '';
+    const eyebrow     = schoolRecord?.secondary_phrase || '';
+    const firstName   = studentData?.studentName ? studentData.studentName.split(' ')[0] : '';
+
+    // Review card: "[First], you're good to go to" → [School Name]
+    const eyebrowEl = document.getElementById('rv-eyebrow');
+    eyebrowEl.textContent = firstName ? `${firstName}, you're good to go to` : "You're good to go to";
+    eyebrowEl.style.display = 'block';
+    document.getElementById('rv-headline').textContent = schoolName;
+    document.getElementById('rv-name').textContent = "Here's what you're getting for your dorm";
+    document.getElementById('rv-name').style.display = 'block';
+
+    // Resolve color/preference objects
+    const sheetC      = KIT_COLORS.find(c => c.key === sel.sheetColor);
+    const coverC      = KIT_COLORS.find(c => c.key === sel.comforterCoverColor);
+    const towelC      = KIT_COLORS.find(c => c.key === sel.towelColor);
+    const slidesC     = KIT_COLORS.find(c => c.key === sel.slidesColor);
+    const sizeLabel   = SLIDES_SIZES.find(s => s.value === sel.slidesSize)?.label;
+    const scentLabel  = sel.pcUnscented ? 'Unscented' : SCENTS.find(s => s.key === sel.pcScent)?.name;
+    const genderLabel = GENDERS.find(g => g.value === sel.pcGender)?.label;
+
+    // Item count
+    const totalItems  = CATEGORIES.reduce((a, c) => a + c.included.length, 0) + 5;
+    document.getElementById('rv-item-count').textContent = `${totalItems} items included`;
+
+    // Bedding
+    const slidesDetail = [genderLabel, sizeLabel ? `Size ${sizeLabel}` : '', slidesC?.name || ''].filter(Boolean).join(' · ');
+    const beddingRows =
+        reviewProductRow(getProductImg('Sheet Set',   sheetC?.name),  '450 Thread Count Sheet Set',  sheetC?.name || '',          getBrand('Sheet Set')) +
+        reviewProductRow(getProductImg('Duvet Cover', coverC?.name),  '100% Cotton Duvet Cover',     coverC?.name || '',          getBrand('Duvet Cover')) +
+        reviewProductRow(getProductImg('Comforter'),                   'Down Alternative Comforter',  null,                        getBrand('Comforter')) +
+        reviewProductRow(getProductImg('Pillow', sel.beddingFirmness),'Standard Pillow',             sel.beddingFirmness || null, getBrand('Pillow', sel.beddingFirmness)) +
+        reviewProductRow(getProductImg('Mattress Protector'),          'Mattress Protector',          null,                        getBrand('Mattress Protector')) +
+        reviewProductRow(getProductImg('Pillow Protectors'),           'Pillow Protectors',           '×2',                        getBrand('Pillow Protectors'));
+
+    // Bath
+    const bathRows =
+        reviewProductRow(getProductImg('Towel Set', towelC?.name), 'Bath Towel Set',           towelC?.name || '',   getBrand('Towel Set', towelC?.name)) +
+        reviewProductRow(getProductImg('Slides', slidesC?.name),   'Slides',                   slidesDetail,         getBrand('Slides')) +
+        reviewProductRow(getProductImg('Shower Caddy'),             'Shower Caddy',             null,                 getBrand('Shower Caddy')) +
+        reviewProductRow(getProductImg('Toiletry Bag'),             'Toiletry Bag',             null,                 getBrand('Toiletry Bag'));
+
+    // Personal Care — images keyed by scent (shampoo) or gender (everything else)
+    const scentForImg   = sel.pcUnscented ? 'Unscented' : SCENTS.find(s => s.key === sel.pcScent)?.catalogValue;
+    const deodorantType = sel.deodorant || 'Deodorant'; // 'Deodorant' or 'Antiperspirant'
+    const pcRows =
+        reviewProductRow(getProductImg('Shampoo & Conditioner', scentForImg),              'Shampoo & Conditioner',  [genderLabel, scentLabel].filter(Boolean).join(' · '), getBrand('Shampoo & Conditioner', scentForImg)) +
+        reviewProductRow(getProductImg('Body Wash', sel.pcGender),                         'Body Wash',              scentLabel || null,   getBrand('Body Wash', sel.pcGender)) +
+        reviewProductRow(getProductImg(deodorantType, sel.pcGender),                       deodorantType,            genderLabel || null,  getBrand(deodorantType, sel.pcGender)) +
+        reviewProductRow(getProductImg('Shaving Cream', sel.pcGender, scentForImg),        'Shaving Cream',          [genderLabel, scentLabel].filter(Boolean).join(' · '), getBrand('Shaving Cream', sel.pcGender, scentForImg)) +
+        reviewProductRow(getProductImg('Razor Handle', sel.pcGender),                      'Razor Handle',           genderLabel || null,  getBrand('Razor Handle', sel.pcGender)) +
+        reviewProductRow(getProductImg('Razor Refills', sel.pcGender),                     'Razor Refills',          genderLabel || null,  getBrand('Razor Refills', sel.pcGender)) +
+        reviewProductRow(getProductImg('Toothbrush'),                                      'Toothbrush & Toothpaste',null,                 getBrand('Toothbrush')) +
+        reviewProductRow(getProductImg('Dental Floss'),                                    'Dental Floss',           null,                 getBrand('Dental Floss'));
+
+    function simpleSection(title, emoji, items) {
+        return reviewCategorySection(title, emoji,
+            items.map(n => reviewProductRow(getProductImg(n), n, null, getBrand(n))).join(''), false);
+    }
+
+    _reviewSectionIdx = 0;
+    document.getElementById('review-kit-list').innerHTML =
+        reviewCategorySection('Bedding',       '🛏️', beddingRows, true)  +
+        reviewCategorySection('Bath',          '🛁',  bathRows,    true)  +
+        reviewCategorySection('Personal Care', '🧴',  pcRows,      false) +
+        simpleSection('Laundry',  '🧺', ['Laundry Pods', 'Dryer Sheets', 'Stain Remover']) +
+        simpleSection('Cleaning', '✨', ['Disinfecting Wipes', 'Bathroom Cleaner', 'All-Purpose Cleaner', 'Microfiber Cloths', 'Trash Bin', 'Paper Towels']) +
+        simpleSection('Desk',     '🖥️', ['Desk Lamp', 'Desktop Organizer', 'Sticky Notes', 'Whiteboard', 'Power Strip', 'Command Strips']) +
+        simpleSection('Storage',  '📦', ['Storage Bins', 'Under-Bed Storage', 'Hangers', 'Pants Hangers', 'Closet Organizer', 'Drawer Organizer']);
+
+    // Shipping address
+    const addr2 = formData.get('street_address_2');
+    document.getElementById('rv-address').innerHTML =
+        `${formData.get('student_name') || ''}<br>
+         ${formData.get('street_address') || ''}<br>
+         ${addr2 ? addr2 + '<br>' : ''}
+         ${formData.get('city') || ''}, ${formData.get('state') || ''} ${formData.get('zip') || ''}`;
+}
+
+// ============================================================
+// FORM SUBMISSION
+// ============================================================
+function submitForm() {
+    const form = document.getElementById('kitForm');
+    const formData = new FormData(form);
+
+    const scentValue = sel.pcUnscented
+        ? 'Unscented'
+        : (SCENTS.find(s => s.key === sel.pcScent)?.catalogValue || '');
+
+    const data = {
+        student_name:          formData.get('student_name'),
+        email:                 formData.get('email'),
+        street_address:        formData.get('street_address'),
+        street_address_2:      formData.get('street_address_2') || '',
+        city:                  formData.get('city'),
+        state:                 formData.get('state'),
+        zip:                   formData.get('zip'),
+        shipping_preference:   formData.get('shipping_preference'),
+        gender_preference:     sel.pcGender,
+        scent_preference:      scentValue,
+        deodorant_type:        sel.deodorant,
+        bedding_color:         KIT_COLORS.find(c => c.key === sel.sheetColor)?.name || '',
+        comforter_cover_color: KIT_COLORS.find(c => c.key === sel.comforterCoverColor)?.name || '',
+        pillow_firmness:       sel.beddingFirmness,
+        towel_color:           KIT_COLORS.find(c => c.key === sel.towelColor)?.name || '',
+        slides_size:           sel.slidesSize,
+        slides_color:          KIT_COLORS.find(c => c.key === sel.slidesColor)?.name || '',
+        college_name:          (studentData && studentData.collegeName)   || '',
+        college_unit_id:       (studentData && studentData.collegeUnitId) || '',
+        school_color:          (schoolRecord && schoolRecord.primary_color_hex) || '#469E92',
+        school_nickname:       (schoolRecord && (schoolRecord.nickname || schoolRecord.name)) || '',
+        timestamp:             new Date().toISOString()
+    };
+
+    document.getElementById('loadingOverlay').classList.add('show');
+
+    fetch('https://grant-fulfillment-proxy.vercel.app/api/proxy', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        document.getElementById('loadingOverlay').classList.remove('show');
+        if (result.status === 'success') {
+            showSuccessPage();
+        } else {
+            console.error('Submission error:', result.message);
+            alert('There was an error submitting your form. Please try again.');
+        }
+    })
+    .catch(error => {
+        document.getElementById('loadingOverlay').classList.remove('show');
+        console.error('Network error:', error);
+        alert('Network error. Please check your connection and try again.');
+    });
+}
+
+function showSuccessPage() {
+    document.getElementById('step-3').classList.remove('active');
+    document.getElementById('step-3').classList.add('complete');
+    document.getElementById('step-4').classList.add('complete');
+    document.getElementById('step-4').classList.add('active');
+    setTimeout(() => {
+        document.getElementById('loadingOverlay').classList.remove('show');
+        const formEl    = document.getElementById('kitForm');
+        const successEl = document.getElementById('successScreen');
+        formEl.style.transition = 'opacity 0.3s ease';
+        formEl.style.opacity    = '0';
+        setTimeout(() => {
+            formEl.style.display    = 'none';
+            formEl.style.transition = '';
+            formEl.style.opacity    = '';
+            successEl.style.opacity   = '0';
+            successEl.style.transform = 'translateY(10px)';
+            successEl.classList.add('show');
+            requestAnimationFrame(() => requestAnimationFrame(() => {
+                successEl.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                successEl.style.opacity    = '1';
+                successEl.style.transform  = 'translateY(0)';
+                setTimeout(() => {
+                    successEl.style.transition = '';
+                    successEl.style.opacity    = '';
+                    successEl.style.transform  = '';
+                }, 500);
+            }));
+            window.scrollTo(0, 0); document.body.scrollTop = 0; document.documentElement.scrollTop = 0;
+        }, 300);
+    }, 50);
+}
+
+// ============================================================
+// ZIP LOOKUP
+// ============================================================
+let zipLookupData = null;
+
+async function lookupZip(zip) {
+    try {
+        const response = await fetch(`https://api.zippopotam.us/us/${zip}`);
+        if (!response.ok) throw new Error('ZIP not found');
+        const data = await response.json();
+        if (data.places && data.places[0]) {
+            return { city: data.places[0]['place name'], state: data.places[0]['state abbreviation'] };
+        }
+    } catch (error) { console.log('ZIP lookup failed:', error); }
+    return null;
+}
+
+function applyZipLookup(data) {
+    if (data) {
+        document.getElementById('city').value = data.city;
+        document.getElementById('state').value = data.state;
+        zipLookupData = null;
+    }
+}
+
+document.getElementById('zip').addEventListener('blur', async function() {
+    const zip = this.value;
+    if (!/^\d{5}$/.test(zip)) return;
+    const data = await lookupZip(zip);
+    if (data) {
+        const currentCity = document.getElementById('city').value.trim();
+        const currentState = document.getElementById('state').value.trim();
+        const norm = s => s.toLowerCase().replace(/\./g,'').replace(/\s+/g,' ').trim();
+        const fieldsEmpty = currentCity === '' && currentState === '';
+        const valuesMatch = norm(data.city) === norm(currentCity) &&
+                            data.state.toUpperCase() === currentState.toUpperCase();
+        if (fieldsEmpty) {
+            applyZipLookup(data);
+        } else if (!valuesMatch) {
+            zipLookupData = data;
+            // Show inline suggestion instead of browser dialog
+            const suggEl = document.getElementById('zip-suggestion');
+            if (suggEl) {
+                document.getElementById('zip-suggestion-text').textContent =
+                    `ZIP ${zip} is usually ${data.city}, ${data.state}. Want to update your city and state?`;
+                suggEl.style.display = 'block';
+            }
+        }
+    }
+});
+
+function acceptZipSuggestion() {
+    if (zipLookupData) applyZipLookup(zipLookupData);
+    dismissZipSuggestion();
+}
+function dismissZipSuggestion() {
+    const el = document.getElementById('zip-suggestion');
+    if (el) el.style.display = 'none';
+    zipLookupData = null;
+}
+
+const zipInput = document.getElementById('zip');
+const zipLiveFeedback = document.getElementById('zip-live-feedback');
+zipInput.addEventListener('input', function() {
+    if (!this.value.trim()) { zipLiveFeedback.style.display = 'none'; return; }
+    zipLiveFeedback.style.display = window.isValidZip(this.value) ? 'none' : 'block';
+});
+
+document.getElementById('state').addEventListener('input', function() {
+    this.value = this.value.toUpperCase();
+});
+
+const emailInputEl = document.getElementById('email');
+const emailLiveFeedback = document.getElementById('email-live-feedback');
+emailInputEl.addEventListener('input', function() {
+    if (!this.value.trim()) { emailLiveFeedback.style.display = 'none'; emailInputEl.classList.remove('invalid'); return; }
+    const result = window.isValidEmail(this.value);
+    if (!result.valid) {
+        emailLiveFeedback.textContent = result.message;
+        emailLiveFeedback.style.display = 'block';
+        emailInputEl.classList.add('invalid');
+    } else {
+        emailLiveFeedback.style.display = 'none';
+        emailInputEl.classList.remove('invalid');
+    }
+});
+emailInputEl.addEventListener('blur', function() {
+    if (this.value.trim()) {
+        const result = window.isValidEmail(this.value);
+        if (!result.valid) {
+            emailLiveFeedback.textContent = result.message;
+            emailLiveFeedback.style.display = 'block';
+            emailInputEl.classList.add('invalid');
+        }
+    }
+});
+
+// ============================================================
+// EMAIL VERIFICATION
+// ============================================================
+let studentData = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+
+    // ── Personalized link auto-verify (?id=CR_XXXX) ──────────────
+    // If the URL contains ?id= the student came from their personal email link.
+    // Skip email entry entirely and verify them automatically.
+    (function() {
+        const params = new URLSearchParams(window.location.search);
+        const appId  = params.get('id');
+        if (!appId) return;
+
+        updateHeader("Let's personalize your kit.", "We'll have everything ready in just a moment.");
+        document.getElementById('emailValidation').style.display = 'none';
+        const checkingDiv = document.createElement('div');
+        checkingDiv.className = 'form-section active';
+        checkingDiv.style.cssText = 'text-align:center;padding:40px 20px;';
+        checkingDiv.innerHTML = '<div style="width:44px;height:44px;border:3px solid var(--grey-border);border-top-color:var(--teal);border-radius:50%;animation:spin 0.9s linear infinite;margin:0 auto 20px;"></div><div style="font-size:1.0625rem;font-weight:600;color:var(--black);margin-bottom:8px;">Pulling up your info…</div><div style="font-size:0.9rem;color:var(--grey-text);line-height:1.5;">Just a moment while we get your grant details together.</div>';
+        document.getElementById('kitForm').prepend(checkingDiv);
+
+        fetch('https://grant-fulfillment-proxy.vercel.app/api/proxy', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ action: 'checkStudentStatusById', applicationId: appId })
+        })
+        .then(r => r.json())
+        .then(result => {
+            const status = result.data || result;
+            if (status.status === 'found') {
+                studentData = status;
+                setTimeout(() => { checkingDiv.remove(); handleStudentStatus(status); }, 700);
+            } else {
+                checkingDiv.remove();
+                updateHeader("Let's personalize your kit.", 'Enter the email from your grant application to get started.');
+                document.getElementById('emailValidation').style.display = 'block';
+            }
+        })
+        .catch(() => {
+            checkingDiv.remove();
+            updateHeader("Let's personalize your kit.", 'Enter the email from your grant application to get started.');
+            document.getElementById('emailValidation').style.display = 'block';
+        });
+    })();
+
+    // Celebration modal — continue to kit after document upload
+    document.getElementById('celebrationContinueBtn').addEventListener('click', function() {
+        document.getElementById('celebrationOverlay').classList.remove('visible');
+        document.getElementById('step-2').classList.add('complete');
+        document.getElementById('step-3').classList.add('active');
+        renderCategories();
+        updateProgress();
+        crossFade(document.getElementById('documentUpload'), document.querySelector('[data-section="1"]'), () => {
+            currentSection = 1;
+            applySchoolTheme();
+            updateHeader('Customize Your Kit', '');
+            window.scrollTo(0, 0);
+        });
+    });
+
+    document.getElementById('verifyEmailBtn').addEventListener('click', async function() {
+        const emailInput = document.getElementById('email_verify');
+        const email = emailInput.value.trim();
+        const errorDiv = document.getElementById('email-verify-error');
+        const formBody = document.getElementById('emailFormBody');
+        const checkingDiv = document.getElementById('email-checking');
+        const SPRING = 'cubic-bezier(0.16,1,0.3,1)';
+
+        errorDiv.style.display = 'none';
+        errorDiv.textContent = '';
+        emailInput.classList.remove('invalid');
+
+        const validation = window.isValidEmail(email);
+        if (!validation.valid) {
+            errorDiv.textContent = validation.message;
+            errorDiv.style.display = 'block';
+            emailInput.classList.add('invalid');
+            return;
+        }
+
+        formBody.style.transition = `opacity 0.2s ${SPRING}`;
+        formBody.style.opacity = '0';
+        setTimeout(() => {
+            formBody.style.display = 'none';
+            formBody.style.transition = '';
+            formBody.style.opacity = '';
+            checkingDiv.style.display = 'block';
+            checkingDiv.style.opacity = '0';
+            requestAnimationFrame(() => requestAnimationFrame(() => {
+                checkingDiv.style.transition = `opacity 0.35s ${SPRING}`;
+                checkingDiv.style.opacity = '1';
+                setTimeout(() => { checkingDiv.style.transition = ''; }, 350);
+            }));
+        }, 200);
+
+        function showError(msg) {
+            checkingDiv.style.transition = `opacity 0.2s ${SPRING}`;
+            checkingDiv.style.opacity = '0';
+            setTimeout(() => {
+                checkingDiv.style.display = 'none';
+                checkingDiv.style.transition = '';
+                checkingDiv.style.opacity = '';
+                if (msg) {
+                    errorDiv.textContent = msg;
+                    errorDiv.style.display = 'block';
+                    emailInput.classList.add('invalid');
+                }
+                formBody.style.display = 'block';
+                formBody.style.opacity = '0';
+                requestAnimationFrame(() => requestAnimationFrame(() => {
+                    formBody.style.transition = `opacity 0.35s ${SPRING}`;
+                    formBody.style.opacity = '1';
+                    setTimeout(() => { formBody.style.transition = ''; formBody.style.opacity = ''; }, 350);
+                }));
+            }, 200);
+        }
+
+        try {
+            const response = await fetch('https://grant-fulfillment-proxy.vercel.app/api/proxy', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'checkStudentStatus', email: email })
+            });
+            const result = await response.json();
+            const studentStatus = result.data || result;
+
+            if (studentStatus.status === 'not_found') {
+                showError('Email not found. Please check your email or contact hello@campusready.foundation');
+            } else if (studentStatus.status === 'found') {
+                studentData = studentStatus;
+                setTimeout(() => handleStudentStatus(studentStatus), 700);
+            }
+        } catch (error) {
+            console.error('Error verifying email:', error);
+            showError('Unable to verify email. Please try again or contact hello@campusready.foundation');
+        }
+    });
+});
+
+function fireConfetti() {
+    const colors = ['#469E92','#DAE244','#A3C6C0','#DD693A','#57068c','#f4a261','#e9c46a'];
+    const totalParticles = 60;
+    const container = document.createElement('div');
+    container.className = 'confetti-container';
+    document.body.appendChild(container);
+    const originX = window.innerWidth / 2;
+    const originY = window.innerHeight / 2;
+    for (let i = 0; i < totalParticles; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'confetti-particle';
+        const chosenColor = colors[Math.floor(Math.random() * colors.length)];
+        const isCircle = Math.random() > 0.5;
+        const size = isCircle ? (5 + Math.random() * 3) : (6 + Math.random() * 4);
+        particle.style.cssText = `width:${size}px;height:${size}px;border-radius:${isCircle ? '50%' : '2px'};background:${chosenColor};left:${originX}px;top:${originY}px;opacity:1;transform:translate(0,0) rotate(0deg);transition:none;`;
+        const angle = (Math.PI * 2 * i / totalParticles) + (Math.random() - 0.5) * 0.8;
+        const dist = Math.max(window.innerWidth, window.innerHeight) * (0.45 + Math.random() * 0.55);
+        const dx = Math.cos(angle) * dist;
+        const dy = Math.sin(angle) * dist - (60 + Math.random() * 40);
+        const rotation = Math.random() * 540;
+        const duration = 2200 + Math.random() * 800;
+        container.appendChild(particle);
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+            particle.style.transition = `transform ${duration}ms cubic-bezier(0.15,0.6,0.35,1), opacity ${duration * 0.35}ms ease-in ${duration * 0.65}ms`;
+            particle.style.transform = `translate(${dx}px,${dy + 50}px) rotate(${rotation}deg)`;
+            particle.style.opacity = '0';
+            setTimeout(() => particle.remove(), duration + 100);
+        }));
+    }
+    setTimeout(() => container.remove(), 3500);
+}
+
+function celebrateThenReveal(firstName, onReveal) {
+    const overlay = document.getElementById('youreInOverlay');
+    document.getElementById('youreInText').textContent = `You're in, ${firstName}!`;
+    overlay.style.display = 'flex';
+    fireConfetti();
+    setTimeout(() => {
+        overlay.style.transition = 'opacity 0.4s ease';
+        overlay.style.opacity = '0';
+        setTimeout(() => {
+            overlay.style.display = 'none';
+            overlay.style.opacity = '';
+            overlay.style.transition = '';
+            onReveal();
+        }, 400);
+    }, 1500);
+}
+
+function handleStudentStatus(data) {
+    studentData = data;
+    const housingStatus    = data.housingStatus    || 'Pending';
+    const acceptanceStatus = data.acceptanceStatus || 'Pending';
+    const first = data.studentName ? data.studentName.split(' ')[0] : '';
+    const welcomeTitle = first ? `You're in, ${first}.` : "You're in!";
+    const dueBadge = '';
+
+    if (data.collegeUnitId) loadSchoolData(data.collegeUnitId);
+
+    const emailEl = document.getElementById('emailValidation');
+    document.getElementById('step-1').classList.add('complete');
+
+    if (housingStatus === 'Approved' && acceptanceStatus === 'Approved') {
+        document.getElementById('step-2').classList.add('complete');
+        document.getElementById('step-3').classList.add('active');
+        renderCategories();
+        updateProgress();
+        crossFade(emailEl, document.querySelector('[data-section="1"]'), () => {
+            currentSection = 1;
+            applySchoolTheme();
+            updateHeader('Customize Your Kit', '');
+            window.scrollTo(0, 0);
+        });
+    } else {
+        document.getElementById('step-2').classList.add('active');
+        const subtitle = (housingStatus === 'Uploaded' || acceptanceStatus === 'Uploaded')
+            ? 'We have your documents and are reviewing them now. We\'ll email you once they\'re approved and your kit is ready to customize.'
+            : `Now, before we finalize your selections, please upload two quick documents. ${dueBadge}`;
+        crossFade(emailEl, document.getElementById('documentUpload'), () => {
+            updateHeader(welcomeTitle, subtitle);
+            window.scrollTo(0, 0);
+        });
+    }
+}
+
+// ============================================================
+// FILE UPLOAD
+// ============================================================
+let housingFileData = null;
+let acceptanceFileData = null;
+
+function validateFile(file) {
+    const validTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg'];
+    if (!validTypes.includes(file.type))
+        return { valid: false, error: 'Oops — we can only accept PDF, JPG, or PNG files. Please select a different file.' };
+    if (file.size > 5 * 1024 * 1024)
+        return { valid: false, error: 'This file is a bit too large (over 5MB). Try compressing it or taking a clearer photo.' };
+    return { valid: true };
+}
+
+function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+
+document.getElementById('housing_doc').addEventListener('change', async function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const validation = validateFile(file);
+    if (!validation.valid) {
+        document.getElementById('housing_error').textContent = validation.error;
+        document.getElementById('housing_filename').textContent = '';
+        return;
+    }
+    document.getElementById('housing_error').textContent = '';
+    document.getElementById('housing_filename').textContent = file.name;
+    housingFileData = { name: file.name, data: await fileToBase64(file) };
+    checkBothFilesSelected();
+});
+
+document.getElementById('acceptance_doc').addEventListener('change', async function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const validation = validateFile(file);
+    if (!validation.valid) {
+        document.getElementById('acceptance_error').textContent = validation.error;
+        document.getElementById('acceptance_filename').textContent = '';
+        return;
+    }
+    document.getElementById('acceptance_error').textContent = '';
+    document.getElementById('acceptance_filename').textContent = file.name;
+    acceptanceFileData = { name: file.name, data: await fileToBase64(file) };
+    checkBothFilesSelected();
+});
+
+function checkBothFilesSelected() {
+    document.getElementById('continueToKitBtn').disabled = !(housingFileData && acceptanceFileData);
+}
+
+document.getElementById('continueToKitBtn').addEventListener('click', async function() {
+    await uploadDocuments();
+});
+
+async function uploadDocuments() {
+    document.getElementById('housing_progress').style.display = 'block';
+    document.getElementById('acceptance_progress').style.display = 'block';
+
+    const messages = [
+        'Sending your documents...',
+        'Uploading securely...',
+        'Preparing to be prepared...',
+        'Almost done...',
+        'Ready to go...',
+        'Confidence. Dignity. A Strong Start.'
+    ];
+    let messageIndex = 0;
+    function swapMessage() {
+        const els = [
+            document.getElementById('housing_progress_text'),
+            document.getElementById('acceptance_progress_text')
+        ];
+        els.forEach(el => { el.style.transition = 'opacity 0.3s'; el.style.opacity = '0'; });
+        setTimeout(() => {
+            messageIndex = (messageIndex + 1) % messages.length;
+            els.forEach(el => {
+                el.textContent = messages[messageIndex];
+                el.classList.remove('msg-fade');
+                void el.offsetWidth; // force reflow
+                el.classList.add('msg-fade');
+                el.style.opacity = '1';
+            });
+        }, 300);
+    }
+    const rotateMessages = setInterval(swapMessage, 3000);
+
+    let progress = 0;
+    const animateProgress = setInterval(() => {
+        progress += 5;
+        if (progress <= 90) {
+            document.getElementById('housing_progress_fill').style.width = progress + '%';
+            document.getElementById('acceptance_progress_fill').style.width = progress + '%';
+        }
+    }, 100);
+
+    try {
+        const response = await fetch('https://grant-fulfillment-proxy.vercel.app/api/proxy', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                action: 'uploadDocuments',
+                email: studentData.email,
+                applicationId: studentData.applicationId,
+                housingFile: housingFileData,
+                acceptanceFile: acceptanceFileData
+            })
+        });
+        const result = await response.json();
+        const data = result;
+
+        if (data.status === 'success') {
+            clearInterval(rotateMessages);
+            clearInterval(animateProgress);
+            document.getElementById('housing_progress_fill').style.width = '100%';
+            document.getElementById('acceptance_progress_fill').style.width = '100%';
+
+            setTimeout(() => {
+                document.getElementById('housing_progress').style.display = 'none';
+                document.getElementById('acceptance_progress').style.display = 'none';
+                document.getElementById('housing_success').style.display = 'block';
+                document.getElementById('acceptance_success').style.display = 'block';
+                document.getElementById('continueToKitBtn').style.display = 'none';
+
+                // Show celebration modal + confetti
+                fireConfetti();
+                document.getElementById('celebrationOverlay').classList.add('visible');
+            }, 300);
+        } else {
+            throw new Error(data.message || 'Upload failed');
+        }
+    } catch (error) {
+        clearInterval(rotateMessages);
+        clearInterval(animateProgress);
+        console.error('Upload error:', error);
+        document.getElementById('housing_progress').style.display = 'none';
+        document.getElementById('acceptance_progress').style.display = 'none';
+        const uploadErrorMsg =
+            'Hmm, something went wrong. Please try uploading again. If this keeps happening, email us at ' +
+            '<a href="mailto:hello@campusready.foundation" style="color:#469E92;text-decoration:underline;">hello@campusready.foundation</a>';
+        document.getElementById('housing_error').innerHTML = uploadErrorMsg;
+        document.getElementById('acceptance_error').innerHTML = uploadErrorMsg;
+    }
+}
+</script>
+
+<script>
+// ============================================================
+// VALIDATION FUNCTIONS (inlined)
+// ============================================================
+window.isValidEmail = function(email) {
+    const val = (email || '').trim();
+    if (!val) return { valid: false, message: 'Email is required.' };
+    const atIndex = val.indexOf('@');
+    if (atIndex <= 0 || atIndex !== val.lastIndexOf('@') || atIndex === val.length - 1)
+        return { valid: false, message: 'Email must contain a single @ (e.g., name@example.com).' };
+    const parts = val.split('@');
+    const local = parts[0], domain = parts[1];
+    if (!local || local.length > 64 || local.startsWith('.') || local.endsWith('.'))
+        return { valid: false, message: 'The part before @ looks invalid.' };
+    if (local.includes('..'))
+        return { valid: false, message: 'The part before @ looks invalid.' };
+    for (const ch of local) {
+        const code = ch.charCodeAt(0);
+        if (code <= 31 || code === 127 || [' ', '"', '\\', '<', '>'].includes(ch))
+            return { valid: false, message: 'The part before @ looks invalid.' };
+    }
+    if (!domain) return { valid: false, message: 'The domain after @ looks invalid.' };
+    const labels = domain.split('.');
+    if (labels.length < 2) return { valid: false, message: 'The domain after @ looks invalid.' };
+    for (const lab of labels) {
+        if (!lab || lab.length > 63 || lab.startsWith('-') || lab.endsWith('-'))
+            return { valid: false, message: 'The domain after @ looks invalid.' };
+        if (/[^0-9A-Za-zÀ-￿-]/.test(lab))
+            return { valid: false, message: 'The domain after @ looks invalid.' };
+    }
+    const tld = labels[labels.length - 1].toLowerCase();
+    if (tld.length < 2) return { valid: false, message: 'The domain after @ looks invalid.' };
+    if (/\d/.test(tld)) return { valid: false, message: 'The domain after @ looks invalid.' };
+    if (tld.length > 6) return { valid: false, message: 'The domain after @ looks invalid.' };
+    if (tld === 'con' || tld === 'cmo' || tld === 'ocm')
+        return { valid: false, message: 'Top-level domain looks wrong: "' + tld + '". Did you mean ".com"?' };
+    const badTLD = ['comm','cpm','xom','vom','cim','cin','xeres','nett','orgg','gom'];
+    if (badTLD.includes(tld)) return { valid: false, message: 'The domain after @ looks invalid.' };
+    const domainSuggestions = {
+        'gamil.com':'gmail.com','gmial.com':'gmail.com','gmai.com':'gmail.com',
+        'hotnail.com':'hotmail.com','hotmial.com':'hotmail.com','hotmai.com':'hotmail.com',
+        'yahho.com':'yahoo.com','yaho.com':'yahoo.com','yahooo.com':'yahoo.com',
+        'outlok.com':'outlook.com','outloo.com':'outlook.com',
+        'iclouds.com':'icloud.com','iclould.com':'icloud.com','iclou.com':'icloud.com'
+    };
+    const domainLower = domain.toLowerCase();
+    if (domainSuggestions[domainLower])
+        return { valid: false, message: 'Did you mean ' + local + '@' + domainSuggestions[domainLower] + '?' };
+    return { valid: true, message: '' };
+};
+
+window.isValidZip = function(zip) {
+    return /^\d{5}(-\d{4})?$/.test(String(zip || '').trim());
+};
+
+window.doesZipMatchCityState = async function(zip, city, state) {
+    const zip5 = String(zip || '').trim().slice(0,10).replace(/\D/g,'').slice(0,5);
+    const st = String(state || '').trim().toUpperCase();
+    const normCity = s => {
+        let x = String(s || '').toLowerCase();
+        x = x.replace(/\./g,'').replace(/\s+/g,' ').trim();
+        x = x.replace(/^st\s+/,'saint ').replace(/^ste\s+/,'sainte ');
+        return x;
+    };
+    const c = normCity(city);
+    try {
+        if (!zip5 || zip5.length !== 5) return false;
+        const response = await fetch(`https://api.zippopotam.us/us/${zip5}`);
+        if (!response.ok) return false;
+        const data = await response.json();
+        const places = Array.isArray(data.places) ? data.places : [];
+        return places.some(place => {
+            const apiCity = normCity(place['place name']);
+            const apiState = String(place['state abbreviation'] || '').toUpperCase();
+            return apiState === st && apiCity === c;
+        });
+    } catch (error) {
+        console.error('ZIP lookup failed:', error);
+        return false;
+    }
+};
+</script>
+
+</body>
+</html>

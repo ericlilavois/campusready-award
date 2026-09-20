@@ -574,7 +574,7 @@
         <!-- SECTION 3: Documents (Phase 4: the last step, each document optional for now) -->
         <div class="form-section" data-section="3">
             <h2 class="section-title">Your documents</h2>
-            <p class="section-description" id="docsIntro">Two documents let us ship your kit. Add what you have now. Anything you don't have yet, you can add later; the link in your email brings you right back here.</p>
+            <p class="section-description" id="docsIntro">We need two documents before we can ship your kit. Add what you have now. Don't worry if you don't have the documents yet. You can always come back and add them later.</p>
 
             <div class="form-group doc-block">
                 <label for="acceptance_choice">College acceptance letter</label>
@@ -2607,7 +2607,7 @@ function prepareDocumentsStep() {
     const intro = document.getElementById('docsIntro');
     intro.textContent = (docIsIn('housing') && docIsIn('acceptance'))
         ? 'Both of your documents are in. Nothing to add here.'
-        : "Two documents let us ship your kit. Add what you have now. Anything you don't have yet, you can add later; the link in your email brings you right back here.";
+        : "We need two documents before we can ship your kit. Add what you have now. Don't worry if you don't have the documents yet. You can always come back and add them later.";
 }
 
 function docChoiceChanged(kind) {

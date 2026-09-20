@@ -70,6 +70,7 @@
         .required::after { content: " *"; color: var(--teal); }
         .helper-text { font-size: 0.875rem; color: var(--black); margin-top: 4px; line-height: 1.4; }
         .live-error { color: var(--error); font-weight: 500; margin-top: 6px; font-size: 0.875rem; display: none; }
+        .live-error.show { display: block; }
 
         input[type="text"], input[type="email"] {
             width: 100%; padding: 12px 16px; border: 2px solid var(--grey-border);
@@ -454,6 +455,7 @@
             <div class="form-group">
                 <label for="student_name" class="required">Student Name</label>
                 <input type="text" id="student_name" name="student_name" required placeholder="Enter your full name, as it appeared on your application">
+                <div class="error-message" id="student_name-error"></div>
             </div>
 
             <div class="form-group">
@@ -478,6 +480,7 @@
                         <label for="ship_storage">Storage Service (e.g. Collegeboxes, U-Haul, your college's storage program)</label>
                     </div>
                 </div>
+                <div class="error-message" id="shipping_preference-error"></div>
             </div>
 
             <div id="storageFields" style="display:none;">
@@ -499,6 +502,7 @@
             <div class="form-group">
                 <label for="street_address" class="required">Street Address</label>
                 <input type="text" id="street_address" name="street_address" required>
+                <div class="error-message" id="street_address-error"></div>
             </div>
 
             <div class="form-group">
@@ -510,6 +514,7 @@
                 <div class="form-group">
                     <label for="city" class="required">City</label>
                     <input type="text" id="city" name="city" required>
+                    <div class="error-message" id="city-error"></div>
                 </div>
                 <div class="form-group">
                     <label for="state" class="required">State</label>
@@ -948,6 +953,47 @@ function prevSection() {
     if (currentSection > 1) goToSection(currentSection - 1);
 }
 
+// A required field that was left blank. Before Sept 2026 the form only moved
+// the cursor into it: on a phone or tablet the keyboard opened, nothing was
+// said, and the button looked dead. Now the field says what it needs, turns
+// red, and scrolls itself into the middle of the screen.
+const MISSING_MESSAGE = {
+    student_name:        'Please enter your name.',
+    email:               'Please enter your email address.',
+    shipping_preference: 'Please choose where your kit should go.',
+    street_address:      'Please enter your street address.',
+    city:                'Please enter your city.',
+    state:               'Please enter your state.',
+    zip:                 'Please enter your ZIP code.'
+};
+
+function fieldErrorBox(input) {
+    const group = input.closest('.form-group');
+    return group ? group.querySelector('.error-message, .live-error') : null;
+}
+
+function showMissing(input) {
+    const box = fieldErrorBox(input);
+    if (box) {
+        box.textContent = MISSING_MESSAGE[input.name] || 'This one is required.';
+        box.classList.add('show');
+    }
+    if (input.type === 'radio') {
+        document.getElementsByName(input.name).forEach(r => r.classList.add('invalid'));
+    } else {
+        input.classList.add('invalid');
+        input.focus({ preventScroll: true });   // the keyboard opens where the message is
+    }
+    (input.closest('.form-group') || input).scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function clearMissing(input) {
+    const box = fieldErrorBox(input);
+    if (box) box.classList.remove('show');
+    if (input.type === 'radio') document.getElementsByName(input.name).forEach(r => r.classList.remove('invalid'));
+    else input.classList.remove('invalid');
+}
+
 async function validateSection(sectionNum) {
     // Section 1 = Kit Customization — check all choice groups answered
     if (sectionNum === 1) {
@@ -971,13 +1017,13 @@ async function validateSection(sectionNum) {
     for (const input of inputs) {
         if (input.type === 'radio') {
             const group = section.querySelectorAll(`input[name="${input.name}"]`);
-            if (!Array.from(group).some(r => r.checked)) {
-                input.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                return false;
-            }
+            if (!Array.from(group).some(r => r.checked)) { showMissing(input); return false; }
+            clearMissing(input);
         } else if (!input.value.trim()) {
-            input.focus();
+            showMissing(input);
             return false;
+        } else {
+            clearMissing(input);
         }
     }
 
@@ -1004,6 +1050,7 @@ async function validateSection(sectionNum) {
         const stateRegex = /^[A-Z]{2}$/;
         if (!stateRegex.test(state.value.toUpperCase())) {
             state.classList.add('invalid');
+            stateError.textContent = 'Please enter a valid 2-letter state code.';
             stateError.classList.add('show');
             state.focus();
             return false;
@@ -1014,6 +1061,7 @@ async function validateSection(sectionNum) {
 
         if (!window.isValidZip(zip.value)) {
             zip.classList.add('invalid');
+            zipError.textContent = 'Please enter a 5-digit ZIP code.';
             zipError.classList.add('show');
             zip.focus();
             return false;
@@ -2716,8 +2764,9 @@ async function uploadDocuments(kinds) {
 // Anything typed or picked on the where-and-when step counts as a change.
 (function() {
     const section2 = document.querySelector('[data-section="2"]');
-    section2.addEventListener('input',  () => { kitDirty = true; });
-    section2.addEventListener('change', () => { kitDirty = true; });
+    const touched = e => { kitDirty = true; if (e.target.matches('input')) clearMissing(e.target); };
+    section2.addEventListener('input',  touched);
+    section2.addEventListener('change', touched);
 })();
 </script>
 

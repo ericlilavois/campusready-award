@@ -2572,8 +2572,13 @@ function handleStudentStatus(data, viaLink) {
     if (returningStudent) restoreSelections(data.selections);
     kitDirty = false;
 
-    // First visit: straight to the kit, whatever the document status.
-    if (!returningStudent) { goToSection(1); return; }
+    // First visit: celebrate, then straight to the kit, whatever the document
+    // status. A returning student does not get the celebration again.
+    if (!returningStudent) {
+        const firstName = data.studentName ? data.studentName.split(' ')[0] : '';
+        celebrateThenReveal(firstName, () => goToSection(1));
+        return;
+    }
 
     // Returning by email link: the document step (or the review page when
     // every document is already in). Returning by typed email: a short menu.

@@ -743,11 +743,12 @@ const totalSections = 4;
 // PHASE 4 (Sept 2026): relay address, step tracking, document state
 // ============================================================
 // Where the form posts. A local test page (localhost) posts to a relay on
-// the tester's own machine, which forwards to the PRACTICE project; the live
-// site always posts to the Vercel relay in front of the live project.
+// the tester's own machine (tools/kit-form-test in the Foundation repo), which
+// forwards to the practice base; the live site posts to the relay on
+// campusready.org, which keeps the record in Airtable (switch plan, Oct 31, 2026).
 const RELAY_URL = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
     ? 'http://localhost:8787/api/proxy'
-    : 'https://grant-fulfillment-proxy.vercel.app/api/proxy';
+    : 'https://campusready.org/api/kit';
 
 // The relay wraps the script's answer as { status: 'success', data: {...} };
 // the script's own status lives inside. Always read the inner one.
@@ -2616,8 +2617,8 @@ function validateFile(file) {
     const validTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg'];
     if (!validTypes.includes(file.type))
         return { valid: false, error: 'Oops — we can only accept PDF, JPG, or PNG files. Please select a different file.' };
-    if (file.size > 5 * 1024 * 1024)
-        return { valid: false, error: 'This file is a bit too large (over 5MB). Try compressing it or taking a clearer photo.' };
+    if (file.size > 3.3 * 1024 * 1024)
+        return { valid: false, error: 'This file is a bit too large (over 3.3 MB). Try compressing it or taking a clearer, smaller photo.' };
     return { valid: true };
 }
 

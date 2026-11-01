@@ -583,7 +583,7 @@
 
             <div class="form-group doc-block">
                 <label for="acceptance_choice">College acceptance letter</label>
-                <p class="upload-help">Your official acceptance or enrollment confirmation. PDF, JPG, or PNG, up to 5MB.</p>
+                <p class="upload-help">Your official acceptance or enrollment confirmation. PDF, JPG, or PNG, up to 3.3 MB.</p>
                 <div id="acceptance_rejected" class="doc-note" style="display:none;">We couldn't use the one you sent. Please upload a new one.</div>
                 <div id="acceptance_choice_wrap">
                     <select id="acceptance_choice" class="doc-select" onchange="docChoiceChanged('acceptance')">
@@ -608,7 +608,7 @@
 
             <div class="form-group doc-block">
                 <label for="housing_choice">Housing assignment</label>
-                <p class="upload-help">A letter from your school or a screenshot of your housing portal showing your room assignment. PDF, JPG, or PNG, up to 5MB.</p>
+                <p class="upload-help">A letter from your school or a screenshot of your housing portal showing your room assignment. PDF, JPG, or PNG, up to 3.3 MB.</p>
                 <div id="housing_rejected" class="doc-note" style="display:none;">We couldn't use the one you sent. Please upload a new one.</div>
                 <div id="housing_choice_wrap">
                     <select id="housing_choice" class="doc-select" onchange="docChoiceChanged('housing')">
@@ -2617,7 +2617,7 @@ function validateFile(file) {
     const validTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg'];
     if (!validTypes.includes(file.type))
         return { valid: false, error: 'Oops — we can only accept PDF, JPG, or PNG files. Please select a different file.' };
-    if (file.size > 3.3 * 1024 * 1024)
+    if (file.size > 3300000)   // 3.3 MB: once encoded, the request fits Vercel's 4.5 MB limit (the relay checks the same number)
         return { valid: false, error: 'This file is a bit too large (over 3.3 MB). Try compressing it or taking a clearer, smaller photo.' };
     return { valid: true };
 }
